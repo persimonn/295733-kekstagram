@@ -1,7 +1,7 @@
 # Личный проект «Кекстаграм» [![Build status][travis-image]][travis-url]
 
 * Студент: [Agnese Svjatska](https://up.htmlacademy.ru/javascript/14/user/295733).
-* Наставник: `Неизвестно`.
+* Наставник: [Андрей Фидельман]
 
 ---
 
