@@ -30,17 +30,18 @@ var getRandomNonRepetitiveValue = function(shuffleMin, shuffleMax) {
     shuffledArray[i] = shuffledArray[j];
     shuffledArray[j] = temp;
   }
-return shuffledArray[i];
+  return shuffledArray;
 };
 
 // функция для создания массива с объектами
 var getPictureArray = function () {
+  var shuffledArray = getRandomNonRepetitiveValue(1, 25);
   var pictureObjects = [];
   for (var i = 0; i < totalPictureObjects; i++) {
     var pictureObject = {};
-    pictureObject.url = 'photos/' + getRandomNonRepetitiveValue(1, 25) + '.jpg';
+    pictureObject.url = 'photos/' + shuffledArray[i] + '.jpg';
     pictureObject.likes = getRandomArbitraryValue(15, 200);
-    pictureObject.comments = getRandomArrayValue(photoComments);
+    pictureObject.commentsCount = getRandomArbitraryValue(5, 125);
     pictureObject.description = getRandomArrayValue(photoDescriptions);
     pictureObjects.push(pictureObject);
   }
@@ -49,21 +50,19 @@ var getPictureArray = function () {
 
 var pictureObjects = getPictureArray();
 
-
 //поиск блока для вставления фотографий
 var picturesBlockElement = document.querySelector('.pictures');
 
 // поиск шаблона
 var pictureTemplate = document.querySelector('#picture')
-    .content
-    .querySelector('.picture__link'); // правильно??
+    .content;
 
 // функция для отрисовки шаблона
 var renderPicture = function (pictureObject) {
   var pictureElement = pictureTemplate.cloneNode(true);
 
-  pictureElement.querySelector('.picture__img').setAttribute('src', pictureObject.url); // как засунуть в src???
-  pictureElement.querySelector('.picture__stat--comments').textContent = pictureObject.comments;
+  pictureElement.querySelector('.picture__img').setAttribute('src', pictureObject.url);
+  pictureElement.querySelector('.picture__stat--comments').textContent = pictureObject.commentsCount;
   pictureElement.querySelector('.picture__stat--likes').textContent = pictureObject.likes;
 
   return pictureElement;
@@ -76,7 +75,67 @@ for (var i = 0; i < pictureObjects.length; i++) {
 }
 picturesBlockElement.appendChild(fragment);
 
-// поиск и отрисовка увеличенной картики
-//   var enlargedImage = document.querySelector('.big-picture');
-//   enlargedImage.classList.remove('hidden');
 
+
+
+// поиск и отрисовка увеличенной картинки
+var enlargedPicture = document.querySelector('.big-picture');
+enlargedPicture.classList.remove('hidden');
+
+// замена url, кол-ва лайков и кол-ва комментариев большой картинки
+enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[0].url);
+enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[0].likes;
+enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0].comments;
+
+
+// удаление текущих комментов и аватарок
+
+var commentsWrapper = enlargedPicture.querySelector('.social__comments');
+//console.log(commentsWrapper.childNodes);
+var removedCommentItem;
+
+while (commentsWrapper.children.length > 0) {
+  removedCommentItem = commentsWrapper.querySelector('.social__comment');
+  commentsWrapper.removeChild(removedCommentItem);
+}
+
+// создание новых комментов и аватарок
+for (var i = 1; i < 6; i++) {
+var commentItem = document.createElement('li');
+commentItem.classList.add('social__comment', 'social__comment--text');
+commentsWrapper.appendChild(commentItem);
+
+var commentAvatar = document.createElement('img');
+commentAvatar.classList.add('social__picture');
+commentAvatar.setAttribute('src', 'img/avatar-' + getRandomArbitraryValue(1, 6) + '.svg');
+commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
+commentAvatar.setAttribute('width', '35');
+commentAvatar.setAttribute('height', '35');
+commentItem.appendChild(commentAvatar);
+
+var commentText = document.createTextNode(getRandomArrayValue(photoComments));
+commentItem.appendChild(commentText);
+}
+
+// добавление описания фотографии
+enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[i].description;
+
+// прячем блоки счётчика комментариев и загрузки новых комментариев
+var commentCount = enlargedPicture.querySelector('.social__comment-count');
+commentCount.classList.add('.visually-hidden');                                 // НЕ СРАБАТЫВАЕТ КЛАСС .visually-hidden
+
+var commentsLoad = enlargedPicture.querySelector('.social__comment-loadmore'); // TAKOГО БЛОКА НЕТ! ЕСТЬ КНОПКА .social__loadmore
+commentsLoad.classList.add('.visually-hidden');
+
+
+// СКОЛЬКО КОММЕНТАРИЕВ ДОЛЖНО БЫТЬ?? ИЗ ЗАДАНИЯ НЕПОНЯТНО
+// КАК ОТОБРАЗИТЬ 1 ИЛИ 2 СЛУЧАЙНЫЕ СТРОКИ?
+
+/*
+comments, массив строк — список комментариев, оставленных другими пользователями к этой фотографии.
+Комментарий должен генерироваться случайным образом.
+Для каждого комментария нужно взять одно или два случайных предложений из предложенных ниже:
+
+Спрячьте блоки счётчика комментариев .social__comment-count
+и загрузки новых комментариев .social__comment-loadmore, добавив им класс .visually-hidden.
+*/
