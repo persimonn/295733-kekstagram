@@ -136,7 +136,7 @@ while (commentsWrapper.children.length > 0) {
 }
 
 // создание новых комментов и аватарок
-for (var i = 1; i < 6; i++) {
+for (var i = 1; i < pictureObjects[i].commentsCount; i++) {
 var commentItem = document.createElement('li');
 commentItem.classList.add('social__comment', 'social__comment--text');
 commentsWrapper.appendChild(commentItem);
