@@ -18,16 +18,16 @@ var getRandomArbitraryValue = function (min, max) {
 };
 
 // функция для поиска случайного неповторяющегося значения в интервале min - max
-var getRandomNonRepetitiveValue = function(shuffleMin, shuffleMax) {
+var getRandomNonRepetitiveValue = function (shuffleMin, shuffleMax) {
   var shuffledArray = [];
   for (var i = shuffleMin; i <= shuffleMax; i++) {
     shuffledArray.push(i);
   }
 
-  for (var i = shuffledArray.length - 1; i > 0; i--) {
-    var j = Math.floor(Math.random() * (i + 1));
-    var temp = shuffledArray[i];
-    shuffledArray[i] = shuffledArray[j];
+  for (var n = shuffledArray.length - 1; n > 0; n--) {
+    var j = Math.floor(Math.random() * (n + 1));
+    var temp = shuffledArray[n];
+    shuffledArray[n] = shuffledArray[j];
     shuffledArray[j] = temp;
   }
   return shuffledArray;
@@ -39,9 +39,6 @@ var renderComment = function () {
   // случайное число - кол-во предложений в комментарии
   var sentenceCount = getRandomArbitraryValue(1, 2);
 
-  //test
-   console.log(sentenceCount);
-
   // cслучайные неповторяющиеся числа - индексы предложений в массиве предложений
   var sentenceIndexes = [];
   while (sentenceIndexes.length < sentenceCount) {
@@ -50,26 +47,18 @@ var renderComment = function () {
     if (!sentenceIndexes.includes(sentenceIndex)) {
       sentenceIndexes.push(sentenceIndex);
     }
-  };
-  // test
-  console.log(sentenceIndexes);
+  }
 
-// вытаскиеваем из массива предложений нужные предложения
+  // вытаскиеваем из массива предложений нужные предложения
   var commentContent = [];
   for (var j = 0; j < sentenceIndexes.length; j++) {
     var fragmentIndex = sentenceIndexes[j];
     var commentFragment = photoComments[fragmentIndex];
     commentContent.push(commentFragment);
   }
-
-  var commentContent = commentContent.join(" ");
-
+  commentContent = commentContent.join(' ');
   return commentContent;
 }
-//test
-var commentContent = renderComment();
-
-console.log(commentContent)
 
 // функция для создания массива с объектами
 var getPictureArray = function () {
@@ -89,7 +78,7 @@ var getPictureArray = function () {
 
 var pictureObjects = getPictureArray();
 
-//поиск блока для вставления фотографий
+// поиск блока для вставления фотографий
 var picturesBlockElement = document.querySelector('.pictures');
 
 // поиск шаблона
@@ -127,7 +116,7 @@ enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0]
 
 // удаление текущих комментов и аватарок
 var commentsWrapper = enlargedPicture.querySelector('.social__comments');
-//console.log(commentsWrapper.childNodes);
+// console.log(commentsWrapper.childNodes);
 var removedCommentItem;
 
 while (commentsWrapper.children.length > 0) {
@@ -136,21 +125,24 @@ while (commentsWrapper.children.length > 0) {
 }
 
 // создание новых комментов и аватарок
-for (var i = 1; i < pictureObjects[i].commentsCount; i++) {
-var commentItem = document.createElement('li');
-commentItem.classList.add('social__comment', 'social__comment--text');
-commentsWrapper.appendChild(commentItem);
 
-var commentAvatar = document.createElement('img');
-commentAvatar.classList.add('social__picture');
-commentAvatar.setAttribute('src', 'img/avatar-' + getRandomArbitraryValue(1, 6) + '.svg');
-commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
-commentAvatar.setAttribute('width', '35');
-commentAvatar.setAttribute('height', '35');
-commentItem.appendChild(commentAvatar);
+var renderCommentsAvatars = function () {
+  for (var i = 1; i < pictureObjects[i].commentsCount; i++) {
+    var commentItem = document.createElement('li');
+    commentItem.classList.add('social__comment', 'social__comment--text');
+    commentsWrapper.appendChild(commentItem);
 
-var commentText = document.createTextNode(pictureObjects[i].commentsText);
-commentItem.appendChild(commentText);
+    var commentAvatar = document.createElement('img');
+    commentAvatar.classList.add('social__picture');
+    commentAvatar.setAttribute('src', 'img/avatar-' + getRandomArbitraryValue(1, 6) + '.svg');
+    commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
+    commentAvatar.setAttribute('width', '35');
+    commentAvatar.setAttribute('height', '35');
+    commentItem.appendChild(commentAvatar);
+
+    var commentText = document.createTextNode(pictureObjects[i].commentsText);
+    commentItem.appendChild(commentText);
+  }
 }
 
 // добавление описания фотографии
