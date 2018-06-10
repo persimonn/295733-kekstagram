@@ -33,6 +33,44 @@ var getRandomNonRepetitiveValue = function(shuffleMin, shuffleMax) {
   return shuffledArray;
 };
 
+// функция для составления комментариев
+var renderComment = function () {
+
+  // случайное число - кол-во предложений в комментарии
+  var sentenceCount = getRandomArbitraryValue(1, 2);
+
+  //test
+   console.log(sentenceCount);
+
+  // cслучайные неповторяющиеся числа - индексы предложений в массиве предложений
+  var sentenceIndexes = [];
+  while (sentenceIndexes.length < sentenceCount) {
+    var sentenceIndex = getRandomArbitraryValue(0, 5);
+
+    if (!sentenceIndexes.includes(sentenceIndex)) {
+      sentenceIndexes.push(sentenceIndex);
+    }
+  };
+  // test
+  console.log(sentenceIndexes);
+
+// вытаскиеваем из массива предложений нужные предложения
+  var commentContent = [];
+  for (var j = 0; j < sentenceIndexes.length; j++) {
+    var fragmentIndex = sentenceIndexes[j];
+    var commentFragment = photoComments[fragmentIndex];
+    commentContent.push(commentFragment);
+  }
+
+  var commentContent = commentContent.join(" ");
+
+  return commentContent;
+}
+//test
+var commentContent = renderComment();
+
+console.log(commentContent)
+
 // функция для создания массива с объектами
 var getPictureArray = function () {
   var shuffledArray = getRandomNonRepetitiveValue(1, 25);
@@ -41,7 +79,8 @@ var getPictureArray = function () {
     var pictureObject = {};
     pictureObject.url = 'photos/' + shuffledArray[i] + '.jpg';
     pictureObject.likes = getRandomArbitraryValue(15, 200);
-    pictureObject.commentsCount = getRandomArbitraryValue(5, 125);
+    pictureObject.commentsCount = getRandomArbitraryValue(1, 6);
+    pictureObject.commentsText = renderComment();
     pictureObject.description = getRandomArrayValue(photoDescriptions);
     pictureObjects.push(pictureObject);
   }
@@ -76,8 +115,6 @@ for (var i = 0; i < pictureObjects.length; i++) {
 picturesBlockElement.appendChild(fragment);
 
 
-
-
 // поиск и отрисовка увеличенной картинки
 var enlargedPicture = document.querySelector('.big-picture');
 enlargedPicture.classList.remove('hidden');
@@ -89,7 +126,6 @@ enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0]
 
 
 // удаление текущих комментов и аватарок
-
 var commentsWrapper = enlargedPicture.querySelector('.social__comments');
 //console.log(commentsWrapper.childNodes);
 var removedCommentItem;
@@ -113,7 +149,7 @@ commentAvatar.setAttribute('width', '35');
 commentAvatar.setAttribute('height', '35');
 commentItem.appendChild(commentAvatar);
 
-var commentText = document.createTextNode(getRandomArrayValue(photoComments));
+var commentText = document.createTextNode(pictureObjects[i].commentsText);
 commentItem.appendChild(commentText);
 }
 
@@ -122,20 +158,7 @@ enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[i
 
 // прячем блоки счётчика комментариев и загрузки новых комментариев
 var commentCount = enlargedPicture.querySelector('.social__comment-count');
-commentCount.classList.add('.visually-hidden');                                 // НЕ СРАБАТЫВАЕТ КЛАСС .visually-hidden
+commentCount.classList.add('visually-hidden');
 
-var commentsLoad = enlargedPicture.querySelector('.social__comment-loadmore'); // TAKOГО БЛОКА НЕТ! ЕСТЬ КНОПКА .social__loadmore
-commentsLoad.classList.add('.visually-hidden');
-
-
-// СКОЛЬКО КОММЕНТАРИЕВ ДОЛЖНО БЫТЬ?? ИЗ ЗАДАНИЯ НЕПОНЯТНО
-// КАК ОТОБРАЗИТЬ 1 ИЛИ 2 СЛУЧАЙНЫЕ СТРОКИ?
-
-/*
-comments, массив строк — список комментариев, оставленных другими пользователями к этой фотографии.
-Комментарий должен генерироваться случайным образом.
-Для каждого комментария нужно взять одно или два случайных предложений из предложенных ниже:
-
-Спрячьте блоки счётчика комментариев .social__comment-count
-и загрузки новых комментариев .social__comment-loadmore, добавив им класс .visually-hidden.
-*/
+var commentsLoad = enlargedPicture.querySelector('.social__loadmore');
+commentsLoad.classList.add('visually-hidden');
