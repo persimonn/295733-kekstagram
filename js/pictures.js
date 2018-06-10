@@ -58,7 +58,7 @@ var renderComment = function () {
   }
   commentContent = commentContent.join(' ');
   return commentContent;
-}
+};
 
 // функция для создания массива с объектами
 var getPictureArray = function () {
@@ -126,24 +126,22 @@ while (commentsWrapper.children.length > 0) {
 
 // создание новых комментов и аватарок
 
-var renderCommentsAvatars = function () {
-  for (var i = 1; i < pictureObjects[i].commentsCount; i++) {
-    var commentItem = document.createElement('li');
-    commentItem.classList.add('social__comment', 'social__comment--text');
-    commentsWrapper.appendChild(commentItem);
+for (var i = 1; i < pictureObjects[i].commentsCount; i++) {
+  var commentItem = document.createElement('li');
+  commentItem.classList.add('social__comment', 'social__comment--text');
+  commentsWrapper.appendChild(commentItem);
 
-    var commentAvatar = document.createElement('img');
-    commentAvatar.classList.add('social__picture');
-    commentAvatar.setAttribute('src', 'img/avatar-' + getRandomArbitraryValue(1, 6) + '.svg');
-    commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
-    commentAvatar.setAttribute('width', '35');
-    commentAvatar.setAttribute('height', '35');
-    commentItem.appendChild(commentAvatar);
+  var commentAvatar = document.createElement('img');
+  commentAvatar.classList.add('social__picture');
+  commentAvatar.setAttribute('src', 'img/avatar-' + getRandomArbitraryValue(1, 6) + '.svg');
+  commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
+  commentAvatar.setAttribute('width', '35');
+  commentAvatar.setAttribute('height', '35');
+  commentItem.appendChild(commentAvatar);
 
-    var commentText = document.createTextNode(pictureObjects[i].commentsText);
-    commentItem.appendChild(commentText);
-  }
-}
+  var commentText = document.createTextNode(pictureObjects[i].commentsText);
+  commentItem.appendChild(commentText);
+};
 
 // добавление описания фотографии
 enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[i].description;
