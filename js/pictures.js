@@ -126,7 +126,7 @@ while (commentsWrapper.children.length > 0) {
 
 // создание новых комментов и аватарок
 
-for (var m = 1; m < pictureObjects[i].commentsCount; m++) {
+for (var m = 1; m < pictureObjects[m].commentsCount; m++) {
   var commentItem = document.createElement('li');
   commentItem.classList.add('social__comment', 'social__comment--text');
   commentsWrapper.appendChild(commentItem);
@@ -139,12 +139,12 @@ for (var m = 1; m < pictureObjects[i].commentsCount; m++) {
   commentAvatar.setAttribute('height', '35');
   commentItem.appendChild(commentAvatar);
 
-  var commentText = document.createTextNode(pictureObjects[i].commentsText);
+  var commentText = document.createTextNode(pictureObjects[m].commentsText);
   commentItem.appendChild(commentText);
 }
 
 // добавление описания фотографии
-enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[i].description;
+enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[m].description;
 
 // прячем блоки счётчика комментариев и загрузки новых комментариев
 var commentCount = enlargedPicture.querySelector('.social__comment-count');
