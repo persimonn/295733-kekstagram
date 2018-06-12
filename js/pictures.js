@@ -26,7 +26,6 @@ var getPhotosArray = function (min, max) {
   return photosArray;
 }
 
-
 // функция, возвращающая массив комментариев
 var getComments = function (num) {
   var commentsArray = [];
@@ -61,7 +60,6 @@ var getComments = function (num) {
 
 var commentsArray = getComments();
 
-
 // функция для создания массива с объектами
 var getPictureArray = function () {
   var photosArray = getPhotosArray(1, 25);
@@ -72,17 +70,22 @@ var getPictureArray = function () {
       url: 'photos/' + photosArray[i] + '.jpg',
       likes: getRandomArbitraryValue(15, 200),
       commentsCount: getRandomArbitraryValue(1, 6),
-      commentsText: getComments(num),
       description: getRandomArrayValue(photoDescriptions)
     };
-    var num = pictureObject.commentsCount;  // ПРОБЛЕМА - СДВИГ НА 1 ЦИКЛ!
     pictureObjects.push(pictureObject);
   }
   return pictureObjects;
 };
 
 var pictureObjects = getPictureArray();
+
+// добавляем к объектам свойства - массивы с комментариями
+for (var t = 0; t < pictureObjects.length; t++) {
+  pictureObjects[t].commentsArray = getComments(pictureObjects[t].commentsCount);
+}
+
 console.log(pictureObjects);
+
 
 // поиск блока для вставления фотографий
 var picturesBlockElement = document.querySelector('.pictures');
@@ -130,38 +133,14 @@ while (commentsWrapper.children.length > 0) {
 }
 
 
-/*
+
 // создание новых комментов и аватарок
 
-for (var m = 1; m <= 6; m++) {
-  var commentItem = document.createElement('li');
-  commentItem.classList.add('social__comment', 'social__comment--text');
-  commentsWrapper.appendChild(commentItem);
-
-  var commentAvatar = document.createElement('img');
-  commentAvatar.classList.add('social__picture');
-  commentAvatar.setAttribute('src', 'img/avatar-' + getRandomArbitraryValue(1, 6) + '.svg');
-  commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
-  commentAvatar.setAttribute('width', '35');
-  commentAvatar.setAttribute('height', '35');
-  commentItem.appendChild(commentAvatar);
-
-  var commentText = document.createTextNode(pictureObjects[0].commentsText[m]);
-  commentItem.appendChild(commentText);
-}
-
-// добавление описания фотографии
-enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
-
-*/
-
-
-// НОВЫЙ ВАРИАНТ
-
-var getCommentBlockTemplate = function () {
-  var commentBlockTemplate = document.createElement('li');
-    commentBlockTemplate.classList.add('social__comment', 'social__comment--text');
-    commentsWrapper.appendChild(commentBlockTemplate);
+var getCommentBlock = function () {
+  for (var c = 0; c < pictureObjects[0].commentsArray.length; c++) {
+    var commentBlock = document.createElement('li');
+    commentBlock.classList.add('social__comment', 'social__comment--text');
+    commentsWrapper.appendChild(commentBlock);
 
     var commentAvatar = document.createElement('img');
     commentAvatar.classList.add('social__picture');
@@ -169,33 +148,20 @@ var getCommentBlockTemplate = function () {
     commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
     commentAvatar.setAttribute('width', '35');
     commentAvatar.setAttribute('height', '35');
-    commentBlockTemplate.appendChild(commentAvatar);
+    commentBlock.appendChild(commentAvatar);
 
-    var commentText = document.createTextNode(pictureObjects[0].commentsText[0]);
-    commentBlockTemplate.appendChild(commentText);
-
-    return commentBlockTemplate;
-}
-
-var commentBlockTemplate = getCommentBlockTemplate();
-console.log(commentBlockTemplate);
-
-var getCommentBlock = function (pictureObject) {
-  var commentBlock = commentBlockTemplate.cloneNode(true);
-
-
+    var commentText = document.createTextNode(pictureObjects[0].commentsArray[c]);
+    commentBlock.appendChild(commentText);
+  }
   return commentBlock;
-};
-
-// заполнение шаблонов
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < 6; i++) {
-  fragment.appendChild(getCommentBlock(pictureObjects[i]));
 }
-commentsWrapper.appendChild(fragment);
 
-///////////////////////////////////////////
+var commentBlock = getCommentBlock();
+console.log(commentBlock);
 
+
+// добавление описания фотографии
+enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
 
 
 // прячем блоки счётчика комментариев и загрузки новых комментариев
