@@ -58,10 +58,9 @@ var getComments = function (num) {
   return commentsArray;
 };
 
-var commentsArray = getComments();
-
 // функция для создания массива с объектами
 var getPictureArray = function () {
+  var commentsArray = getComments();
   var photosArray = getPhotosArray(1, 25);
   var pictureObjects = [];
 
@@ -84,8 +83,7 @@ for (var t = 0; t < pictureObjects.length; t++) {
   pictureObjects[t].commentsArray = getComments(pictureObjects[t].commentsCount);
 }
 
-console.log(pictureObjects);
-
+///////////////console.log(pictureObjects);
 
 // поиск блока для вставления фотографий
 var picturesBlockElement = document.querySelector('.pictures');
@@ -106,33 +104,41 @@ var getPicture = function (pictureObject) {
 };
 
 // заполнение шаблонов
-var fragment = document.createDocumentFragment();
-for (var i = 0; i < pictureObjects.length; i++) {
-  fragment.appendChild(getPicture(pictureObjects[i]));
-}
-picturesBlockElement.appendChild(fragment);
+var renderPictures = function () {
+  var fragment = document.createDocumentFragment();
+  for (var i = 0; i < pictureObjects.length; i++) {
+    fragment.appendChild(getPicture(pictureObjects[i]));
+  }
+  picturesBlockElement.appendChild(fragment);
+};
 
+renderPictures();
 
 // поиск и отрисовка увеличенной картинки
 var enlargedPicture = document.querySelector('.big-picture');
 enlargedPicture.classList.remove('hidden');
 
 // замена url, кол-ва лайков и кол-ва комментариев большой картинки
-enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[0].url);
-enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[0].likes;
-enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0].comments;
+var getBigPictureData = function () {
+  enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[0].url);
+  enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[0].likes;
+  enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0].comments;
+};
 
+getBigPictureData();
 
 // удаление текущих комментов и аватарок
 var commentsWrapper = enlargedPicture.querySelector('.social__comments');
-var removedCommentItem;
 
-while (commentsWrapper.children.length > 0) {
-  removedCommentItem = commentsWrapper.querySelector('.social__comment');
-  commentsWrapper.removeChild(removedCommentItem);
-}
+var removeBigPictureComments = function () {
+  var removedCommentItem;
+  while (commentsWrapper.children.length > 0) {
+    removedCommentItem = commentsWrapper.querySelector('.social__comment');
+    commentsWrapper.removeChild(removedCommentItem);
+  }
+};
 
-
+removeBigPictureComments();
 
 // создание новых комментов и аватарок
 
@@ -157,17 +163,22 @@ var getCommentBlock = function () {
 }
 
 var commentBlock = getCommentBlock();
-console.log(commentBlock);
-
 
 // добавление описания фотографии
-enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
+var getPictureDescription = function () {
+  enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
+};
 
+getPictureDescription();
 
 // прячем блоки счётчика комментариев и загрузки новых комментариев
-var commentCount = enlargedPicture.querySelector('.social__comment-count');
-commentCount.classList.add('visually-hidden');
 
-var commentsLoad = enlargedPicture.querySelector('.social__loadmore');
-commentsLoad.classList.add('visually-hidden');
+var hideCommentRelatedItems = function () {
+  var commentCount = enlargedPicture.querySelector('.social__comment-count');
+  commentCount.classList.add('visually-hidden');
 
+  var commentsLoad = enlargedPicture.querySelector('.social__loadmore');
+  commentsLoad.classList.add('visually-hidden');
+};
+
+hideCommentRelatedItems();
