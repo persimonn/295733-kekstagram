@@ -8,10 +8,10 @@ var totalPictureObjects = 25;
 // поиск шаблона
 var pictureTemplate = document.querySelector('#picture').content;
 
- // поиск блока для вставления фотографий
+// поиск блока для вставления фотографий
 var picturesBlockElement = document.querySelector('.pictures');
 
- // поиск увеличенной картинки
+// поиск увеличенной картинки
 var enlargedPicture = document.querySelector('.big-picture');
 
 // поиск блока комментариев
@@ -84,12 +84,12 @@ var getPictureArray = function () {
       description: getRandomArrayValue(photoDescriptions)
     };
     pictureObjects.push(pictureObject);
-  };
+  }
 
   // добавляем к объектам свойства - массивы с комментариями
   for (var t = 0; t < pictureObjects.length; t++) {
     pictureObjects[t].commentsArray = getComments(pictureObjects[t].commentsCount);
-  };
+  }
 
   return pictureObjects;
 };
@@ -107,7 +107,7 @@ var getPicture = function (pictureObject) {
 
 // заполнение шаблонов
 var renderPictures = function () {
-  //var picturesBlockElement = findPicturesBlockElement();
+  // var picturesBlockElement = findPicturesBlockElement();
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < pictureObjects.length; i++) {
     fragment.appendChild(getPicture(pictureObjects[i]));
@@ -164,7 +164,7 @@ var getPictureDescription = function () {
 
 // прячем блоки счётчика комментариев и загрузки новых комментариев
 var hideCommentRelatedItems = function () {
-  //var enlargedPicture = findEnlargedPicture();
+  // var enlargedPicture = findEnlargedPicture();
   var commentCount = enlargedPicture.querySelector('.social__comment-count');
   commentCount.classList.add('visually-hidden');
 
