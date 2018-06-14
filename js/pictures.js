@@ -5,42 +5,17 @@ var photoComments = ['Всё отлично!', 'В целом всё непло�
 var photoDescriptions = ['Тестим новую камеру!', 'Затусили с друзьями на море', 'Как же круто тут кормят', 'Отдыхаем...', 'Цените каждое мгновенье. Цените тех, кто рядом с вами и отгоняйте все сомненья. Не обижайте всех словами......', 'Вот это тачка!'];
 var totalPictureObjects = 25;
 
-var elementSearch = {
-  pictureTemplate: document.querySelector('#picture').content,
-  picturesBlockElement: document.querySelector('.pictures'),
-  enlargedPicture: document.querySelector('.big-picture'),
-};
-elementSearch.commentsWrapper = elementSearch.enlargedPicture.querySelector('.social__comments');
+// поиск шаблона
+var pictureTemplate = document.querySelector('#picture').content;
 
-/*
-var findPictureTemplate = function () {
-  // поиск шаблона
-  var pictureTemplate = document.querySelector('#picture')
-    .content;
+ // поиск блока для вставления фотографий
+var picturesBlockElement = document.querySelector('.pictures');
 
-  return pictureTemplate;
-};
+ // поиск увеличенной картинки
+var enlargedPicture = document.querySelector('.big-picture');
 
-
-var findPicturesBlockElement = function () {
-  // поиск блока для вставления фотографий
-  var picturesBlockElement = document.querySelector('.pictures');
-  return picturesBlockElement;
-};
-
-
-var findEnlargedPicture = function () {
-  // поиск увеличенной картинки
-  var enlargedPicture = document.querySelector('.big-picture');
-  return enlargedPicture;
-};
-
-var findComments = function () {
-  //var enlargedPicture = findEnlargedPicture();
-  var commentsWrapper = enlargedPicture.querySelector('.social__comments');
-  return commentsWrapper;
-}
-*/
+// поиск блока комментариев
+var commentsWrapper = enlargedPicture.querySelector('.social__comments');
 
 // функция для поиска случайного значения в массиве
 var getRandomArrayValue = function (arr) {
@@ -119,13 +94,9 @@ var getPictureArray = function () {
   return pictureObjects;
 };
 
-var pictureObjects = getPictureArray();
-console.log(pictureObjects);
-
 // функция для отрисовки шаблона
 var getPicture = function (pictureObject) {
-  //var pictureTemplate = findPictureTemplate();
-  var pictureElement = elementSearch.pictureTemplate.cloneNode(true);
+  var pictureElement = pictureTemplate.cloneNode(true);
 
   pictureElement.querySelector('.picture__img').setAttribute('src', pictureObject.url);
   pictureElement.querySelector('.picture__stat--comments').textContent = pictureObject.commentsCount;
@@ -141,51 +112,36 @@ var renderPictures = function () {
   for (var i = 0; i < pictureObjects.length; i++) {
     fragment.appendChild(getPicture(pictureObjects[i]));
   }
-  elementSearch.picturesBlockElement.appendChild(fragment);
+  picturesBlockElement.appendChild(fragment);
 };
-
-renderPictures();
 
 // отрисовка увеличенной картинки
 var getBigPicture = function () {
-  //var enlargedPicture = findEnlargedPicture();
-  elementSearch.enlargedPicture.classList.remove('hidden');
+  enlargedPicture.classList.remove('hidden');
 };
-
-getBigPicture();
-
 
 // замена url, кол-ва лайков и кол-ва комментариев большой картинки
 var getBigPictureData = function () {
-  //var enlargedPicture = findEnlargedPicture();
-  elementSearch.enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[0].url);
-  elementSearch.enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[0].likes;
-  elementSearch.enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0].comments;
+  enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[0].url);
+  enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[0].likes;
+  enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0].comments;
 };
 
-getBigPictureData();
-
 // удаление текущих комментов и аватарок
-
 var removeBigPictureComments = function () {
-  //var commentsWrapper = findComments();
   var removedCommentItem;
-  while (elementSearch.commentsWrapper.children.length > 0) {
-    removedCommentItem = elementSearch.commentsWrapper.querySelector('.social__comment');
-    elementSearch.commentsWrapper.removeChild(removedCommentItem);
+  while (commentsWrapper.children.length > 0) {
+    removedCommentItem = commentsWrapper.querySelector('.social__comment');
+    commentsWrapper.removeChild(removedCommentItem);
   }
 };
 
-removeBigPictureComments();
-
 // создание новых комментов и аватарок
-
 var getCommentBlock = function () {
-  //var commentsWrapper = findComments();
   for (var c = 0; c < pictureObjects[0].commentsArray.length; c++) {
     var commentBlock = document.createElement('li');
     commentBlock.classList.add('social__comment', 'social__comment--text');
-    elementSearch.commentsWrapper.appendChild(commentBlock);
+    commentsWrapper.appendChild(commentBlock);
 
     var commentAvatar = document.createElement('img');
     commentAvatar.classList.add('social__picture');
@@ -201,25 +157,26 @@ var getCommentBlock = function () {
   return commentBlock;
 };
 
-getCommentBlock();
-
 // добавление описания фотографии
 var getPictureDescription = function () {
-  //var enlargedPicture = findEnlargedPicture();
-  elementSearch.enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
+  enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
 };
 
-getPictureDescription();
-
 // прячем блоки счётчика комментариев и загрузки новых комментариев
-
 var hideCommentRelatedItems = function () {
   //var enlargedPicture = findEnlargedPicture();
-  var commentCount = elementSearch.enlargedPicture.querySelector('.social__comment-count');
+  var commentCount = enlargedPicture.querySelector('.social__comment-count');
   commentCount.classList.add('visually-hidden');
 
-  var commentsLoad = elementSearch.enlargedPicture.querySelector('.social__loadmore');
+  var commentsLoad = enlargedPicture.querySelector('.social__loadmore');
   commentsLoad.classList.add('visually-hidden');
 };
 
+var pictureObjects = getPictureArray();
+renderPictures();
+getBigPicture();
+getBigPictureData();
+removeBigPictureComments();
+getCommentBlock();
+getPictureDescription();
 hideCommentRelatedItems();
