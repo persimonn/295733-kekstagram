@@ -24,7 +24,7 @@ var getPhotosArray = function (min, max) {
     photosArray.push(i);
   }
   return photosArray;
-}
+};
 
 // функция, возвращающая массив комментариев
 var getComments = function (num) {
@@ -60,7 +60,7 @@ var getComments = function (num) {
 
 // функция для создания массива с объектами
 var getPictureArray = function () {
-  var commentsArray = getComments();
+  getComments();
   var photosArray = getPhotosArray(1, 25);
   var pictureObjects = [];
 
@@ -82,8 +82,6 @@ var pictureObjects = getPictureArray();
 for (var t = 0; t < pictureObjects.length; t++) {
   pictureObjects[t].commentsArray = getComments(pictureObjects[t].commentsCount);
 }
-
-///////////////console.log(pictureObjects);
 
 // поиск блока для вставления фотографий
 var picturesBlockElement = document.querySelector('.pictures');
@@ -160,9 +158,9 @@ var getCommentBlock = function () {
     commentBlock.appendChild(commentText);
   }
   return commentBlock;
-}
+};
 
-var commentBlock = getCommentBlock();
+getCommentBlock();
 
 // добавление описания фотографии
 var getPictureDescription = function () {
