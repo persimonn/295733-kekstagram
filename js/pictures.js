@@ -174,9 +174,184 @@ var hideCommentRelatedItems = function () {
 
 var pictureObjects = getPictureArray();
 renderPictures();
+/*
 getBigPicture();
 getBigPictureData();
 removeBigPictureComments();
 getCommentBlock();
 getPictureDescription();
 hideCommentRelatedItems();
+*/
+
+
+// 1. загрузка нового изображения
+var uploadOpen = document.querySelector('#upload-file');
+var uploadClose = document.querySelector('#upload-cancel');
+var uploadBlock =document.querySelector('.img-upload__overlay');
+
+uploadOpen.addEventListener('change', function(evt) {
+  uploadBlock.classList.remove('hidden');
+
+
+
+  document.addEventListener('keydown', function(evt) {
+    if (evt. keyCode === 27) {
+      uploadBlock.classList.add('hidden');
+    //   uploadOpen.value = ' ';                    // НЕ РАБОТАЕТ "при закрытии формы, дополнительно нужно сбрасывать значение поля выбора файла #upload-file. "
+    }
+  })
+});
+
+uploadClose.addEventListener('click', function() {
+  uploadBlock.classList.add('hidden');
+ // uploadOpen.value = ' ';                         // НЕ РАБОТАЕТ "при закрытии формы, дополнительно нужно сбрасывать значение поля выбора файла #upload-file. "
+
+});
+
+// 2. редактирование изображения
+
+// 2.1 масштаб
+
+var resizePlus = document.querySelector('.resize__control--plus');
+var resizeMinus = document.querySelector('.resize__control--minus');
+var resizeValue = document.querySelector('.resize__control--value');
+var uploadPreview = document.querySelector('.img-upload__preview img');
+
+var imageSizeValue = 100;
+resizeValue.value = imageSizeValue + '%';
+
+var calculateTransform = function() {
+  var imageSizeScale = imageSizeValue * 0.01;
+  return 'transform: scale(' + imageSizeScale + ')';
+};
+
+uploadPreview.setAttribute('style', calculateTransform());
+
+resizeMinus.addEventListener('click', function () {
+  if (imageSizeValue >= 50) {
+    imageSizeValue = imageSizeValue - 25;
+    resizeValue.value = imageSizeValue + '%';
+    uploadPreview.style = calculateTransform();
+  };
+});
+
+resizePlus.addEventListener('click', function () {
+  if (imageSizeValue <= 75) {
+    imageSizeValue = imageSizeValue + 25;
+    resizeValue.value = imageSizeValue + '%';
+    uploadPreview.style = calculateTransform();
+  };
+});
+
+
+// 2.2 наложение эффекта
+
+var effectsButtons = document.querySelectorAll('.effects__radio');
+
+document.querySelector('#effect-heat').removeAttribute('checked');
+
+var getEffectClassName = function() {
+  return 'effects__preview--' + document.activeElement.value;
+};
+
+effectsButtons.forEach(function(effectsButtons) {
+  effectsButtons.addEventListener('change', function() {
+    uploadPreview.className = ' ';
+    var className = getEffectClassName();
+    uploadPreview.classList.add(getEffectClassName());
+  });
+});
+
+// слайдер - передвигание ползунка
+
+var scalePin = document.querySelector('.scale__pin');
+var scaleLevel = document.querySelector('.scale__level');
+var scaleValue = document.querySelector('.scale__value');
+
+scalePin.addEventListener('mousedown', function(evt) {
+  evt.preventDefault;
+
+  var startCoords = {
+    x: evt.clientX,
+    y: evt.clientY
+  };
+
+  var onMouseMove = function (moveEvt) {
+    moveEvt.preventDefault();
+
+    var shift = {
+      x: startCoords.x - moveEvt.clientX,
+      y: evt.clientY
+    };
+
+    startCoords = {
+      x: moveEvt.clientX,
+      y: evt.clientY
+    };
+
+    scalePin.style.left = (scalePin.offsetLeft - shift.x) + 'px';    // ползунок передвигается по y оси в + и - бесконечность, как поставить макс и мин значения?? (0 и 455px)
+  };
+
+  var onMouseUp = function (upEvt) {
+    upEvt.preventDefault();
+    console.log(scalePin.style.left);
+
+    scaleValue.value = 100;
+
+    // изменение интенсивности эффекта
+    var calculateScaleValue = function () {
+      scaleValue.value = Math.round(parseInt(scalePin.style.left.replace('px', '')) * 100 / 455);
+      return scaleValue.value;
+      console.log (scaleValue.value);
+    }
+    calculateScaleValue();
+
+
+    var changeEffectIntensity = function () {                          // НЕ РАБОТАЕТ
+      if (uploadPreview.className == 'effects__preview--chrome') {
+
+        var calculateGrayscale = function () {
+          return (calculateScaleValue() * 0.01).toFixed(1);
+        }
+
+        var grayscale = calculateGrayscale();
+        console.log(grayscale);
+        uploadPreview.setAttribute('style', 'filter=grayscale(grayscale)');
+        console.log(uploadPreview.style);
+      }
+    };
+    changeEffectIntensity()
+
+
+
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+
+  document.addEventListener('mousemove', onMouseMove);
+  document.addEventListener('mouseup', onMouseUp);
+
+});
+
+
+
+/*
+Интенсивность эффекта регулируется перемещением ползунка в слайдере .scale__pin.
+Уровень эффекта записывается в поле .scale__value. При изменении уровня интенсивности
+эффекта, CSS-стили элемента .img-upload__preview обновляются следующим образом:
+
+Для эффекта «Хром» — filter: grayscale(0..1);
+Для эффекта «Сепия» — filter: sepia(0..1);
+Для эффекта «Марвин» — filter: invert(0..100%);
+Для эффекта «Фобос» — filter: blur(0..3px);
+Для эффекта «Зной» — filter: brightness(1..3).
+При выборе эффекта «Оригинал» слайдер скрывается.
+При переключении эффектов, уровень насыщенности сбрасывается
+до начального значения (100%): слайдер, CSS-стиль изображения и значение поля должны
+обновляться.
+
+
+*/
+
+
+
