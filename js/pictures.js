@@ -121,10 +121,10 @@ var getBigPicture = function () {
 };
 
 // замена url, кол-ва лайков и кол-ва комментариев большой картинки
-var getBigPictureData = function () {
-  enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[0].url);
-  enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[0].likes;
-  enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0].comments;
+var getBigPictureData = function (pictureIndex) {
+  enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[pictureIndex].url);
+  enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[pictureIndex].likes;
+  enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[pictureIndex].comments;
 };
 
 // удаление текущих комментов и аватарок
@@ -137,8 +137,8 @@ var removeBigPictureComments = function () {
 };
 
 // создание новых комментов и аватарок
-var getCommentBlock = function () {
-  for (var c = 0; c < pictureObjects[0].commentsArray.length; c++) {
+var getCommentBlock = function (pictureIndex) {
+  for (var c = 0; c < pictureObjects[pictureIndex].commentsArray.length; c++) {
     var commentBlock = document.createElement('li');
     commentBlock.classList.add('social__comment', 'social__comment--text');
     commentsWrapper.appendChild(commentBlock);
@@ -151,7 +151,7 @@ var getCommentBlock = function () {
     commentAvatar.setAttribute('height', '35');
     commentBlock.appendChild(commentAvatar);
 
-    var commentText = document.createTextNode(pictureObjects[0].commentsArray[c]);
+    var commentText = document.createTextNode(pictureObjects[pictureIndex].commentsArray[c]);
     commentBlock.appendChild(commentText);
   }
   return commentBlock;
@@ -159,7 +159,7 @@ var getCommentBlock = function () {
 
 // добавление описания фотографии
 var getPictureDescription = function () {
-  enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
+  enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[pictureIndex].description;
 };
 
 // прячем блоки счётчика комментариев и загрузки новых комментариев
@@ -172,14 +172,16 @@ var hideCommentRelatedItems = function () {
   commentsLoad.classList.add('visually-hidden');
 };
 
+var pictureIndex = 24;
+
 var pictureObjects = getPictureArray();
 renderPictures();
 /*
 getBigPicture();
-getBigPictureData();
+getBigPictureData(pictureIndex);
 removeBigPictureComments();
-getCommentBlock();
-getPictureDescription();
+getCommentBlock(pictureIndex);
+getPictureDescription(pictureIndex);
 hideCommentRelatedItems();
 */
 
@@ -197,14 +199,14 @@ uploadOpen.addEventListener('change', function(evt) {
   document.addEventListener('keydown', function(evt) {
     if (evt. keyCode === 27) {
       uploadBlock.classList.add('hidden');
-    //   uploadOpen.value = ' ';                    // НЕ РАБОТАЕТ "при закрытии формы, дополнительно нужно сбрасывать значение поля выбора файла #upload-file. "
+      uploadOpen.value = '';
     }
   })
 });
 
 uploadClose.addEventListener('click', function() {
   uploadBlock.classList.add('hidden');
- // uploadOpen.value = ' ';                         // НЕ РАБОТАЕТ "при закрытии формы, дополнительно нужно сбрасывать значение поля выбора файла #upload-file. "
+  uploadOpen.value = '';
 
 });
 
@@ -265,7 +267,6 @@ effectsButtons.forEach(function(effectsButtons) {
 // слайдер - передвигание ползунка
 
 var scalePin = document.querySelector('.scale__pin');
-var scaleLevel = document.querySelector('.scale__level');
 var scaleValue = document.querySelector('.scale__value');
 
 scalePin.addEventListener('mousedown', function(evt) {
@@ -289,11 +290,14 @@ scalePin.addEventListener('mousedown', function(evt) {
       y: evt.clientY
     };
 
-    scalePin.style.left = (scalePin.offsetLeft - shift.x) + 'px';    // ползунок передвигается по y оси в + и - бесконечность, как поставить макс и мин значения?? (0 и 455px)
+    if (scalePin.offsetLeft > 0 && scalePin.offsetLeft < 455) {
+      scalePin.style.left = (scalePin.offsetLeft - shift.x) + 'px';
+    };
   };
 
   var onMouseUp = function (upEvt) {
     upEvt.preventDefault();
+
     console.log(scalePin.style.left);
 
     scaleValue.value = 100;
@@ -306,23 +310,23 @@ scalePin.addEventListener('mousedown', function(evt) {
     }
     calculateScaleValue();
 
+    var calculateGrayscaleIntensity = function () {
+      var grayscaleIntensityLevel = (scaleValue.value * 0.01).toFixed(1);
+      return grayscaleIntensityLevel;
+    }
+
+    var grayscaleIntensityLevel = calculateGrayscaleIntensity();
+    console.log(grayscaleIntensityLevel);
 
     var changeEffectIntensity = function () {                          // НЕ РАБОТАЕТ
-      if (uploadPreview.className == 'effects__preview--chrome') {
-
-        var calculateGrayscale = function () {
-          return (calculateScaleValue() * 0.01).toFixed(1);
-        }
-
-        var grayscale = calculateGrayscale();
-        console.log(grayscale);
-        uploadPreview.setAttribute('style', 'filter=grayscale(grayscale)');
-        console.log(uploadPreview.style);
+      if (upEvt.target.id == 'effect-chrome') {
+        console.log('chrome is active');
       }
+      //uploadPreview.style = calculateIntensity();
+
     };
+
     changeEffectIntensity()
-
-
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
@@ -330,9 +334,7 @@ scalePin.addEventListener('mousedown', function(evt) {
 
   document.addEventListener('mousemove', onMouseMove);
   document.addEventListener('mouseup', onMouseUp);
-
 });
-
 
 
 /*
@@ -349,9 +351,4 @@ scalePin.addEventListener('mousedown', function(evt) {
 При переключении эффектов, уровень насыщенности сбрасывается
 до начального значения (100%): слайдер, CSS-стиль изображения и значение поля должны
 обновляться.
-
-
 */
-
-
-
