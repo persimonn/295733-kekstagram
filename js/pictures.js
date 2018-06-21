@@ -248,51 +248,58 @@ resizePlus.addEventListener('click', function () {
 
 // 2.2 наложение эффекта
 
-var effectsButtons = document.querySelectorAll('.effects__radio');
-
 document.querySelector('#effect-heat').removeAttribute('checked');
 
-var getEffectClassName = function() {
-  return 'effects__preview--' + document.activeElement.value;
-};
+document.addEventListener('click', function() {
+  var effectButtons = document.querySelectorAll('.effects__radio');
+  var activeEffectButton = null;
 
-effectsButtons.forEach(function(effectsButtons) {
-  effectsButtons.addEventListener('change', function() {
+  var getEffectClassName = function() {
+    return 'effects__preview--' + document.activeElement.value;
+  };
+
+  for (var k = 0; k < effectButtons.length; k++) {
+    if (effectButtons[k].checked) {
+      activeEffectButton = effectButtons[k];
+    }
+  }
+
+  if (activeEffectButton) {
     uploadPreview.className = ' ';
-    var className = getEffectClassName();
     uploadPreview.classList.add(getEffectClassName());
-  });
+    var activeClass = uploadPreview.className;
+  }
 });
 
 // слайдер - передвигание ползунка
 
 var scalePin = document.querySelector('.scale__pin');
+var scale = document.querySelector('.scale');
+var scaleLevel = document.querySelector('.scale__level');
 var scaleValue = document.querySelector('.scale__value');
+var MAX_LEFT = parseFloat(window.getComputedStyle(scale).width) - 20 * 2;
 
 scalePin.addEventListener('mousedown', function(evt) {
-  evt.preventDefault;
+  evt.preventDefault();
 
-  var startCoords = {
-    x: evt.clientX,
-    y: evt.clientY
-  };
+  var startCoordsX = evt.clientX;
 
   var onMouseMove = function (moveEvt) {
     moveEvt.preventDefault();
 
-    var shift = {
-      x: startCoords.x - moveEvt.clientX,
-      y: evt.clientY
+    var distance = moveEvt.clientX - startCoordsX;
+
+    startCoordsX = moveEvt.clientX;
+
+    if (scalePin.offsetLeft < 0) {
+      scalePin.style.left = 0;
+    } else if (scalePin.offsetLeft > MAX_LEFT) {
+      scalePin.style.left = MAX_LEFT + 'px';
+    } else {
+      scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
     };
 
-    startCoords = {
-      x: moveEvt.clientX,
-      y: evt.clientY
-    };
-
-    if (scalePin.offsetLeft > 0 && scalePin.offsetLeft < 455) {
-      scalePin.style.left = (scalePin.offsetLeft - shift.x) + 'px';
-    };
+    scaleLevel.style.width = scalePin.style.left;
   };
 
   var onMouseUp = function (upEvt) {
@@ -317,16 +324,15 @@ scalePin.addEventListener('mousedown', function(evt) {
 
     var grayscaleIntensityLevel = calculateGrayscaleIntensity();
     console.log(grayscaleIntensityLevel);
-
+/*
     var changeEffectIntensity = function () {                          // НЕ РАБОТАЕТ
-      if (upEvt.target.id == 'effect-chrome') {
+      if (activeClassName == 'effect-chrome') {
         console.log('chrome is active');
       }
       //uploadPreview.style = calculateIntensity();
-
     };
-
     changeEffectIntensity()
+*/
 
     document.removeEventListener('mousemove', onMouseMove);
     document.removeEventListener('mouseup', onMouseUp);
