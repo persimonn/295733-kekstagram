@@ -249,9 +249,8 @@ resizePlus.addEventListener('click', function () {
 // 2.2 наложение эффекта
 
 document.querySelector('#effect-heat').removeAttribute('checked');
-var activeClass;
 
-document.addEventListener('click', function() {
+document.addEventListener('change', function(evt) {
   var effectButtons = document.querySelectorAll('.effects__radio');
   var activeEffectButton = null;
 
@@ -268,81 +267,108 @@ document.addEventListener('click', function() {
   if (activeEffectButton) {
     uploadPreview.className = ' ';
     uploadPreview.classList.add(getEffectClassName());
-    activeClass = uploadPreview.className;
-  }
-});
-
-console.log(activeClass);
-
-// слайдер - передвигание ползунка
-
-var scalePin = document.querySelector('.scale__pin');
-var scale = document.querySelector('.scale');
-var scaleLevel = document.querySelector('.scale__level');
-var scaleValue = document.querySelector('.scale__value');
-var MAX_LEFT = parseFloat(window.getComputedStyle(scale).width) - 20 * 2;
-
-scalePin.addEventListener('mousedown', function(evt) {
-  evt.preventDefault();
-
-  var startCoordsX = evt.clientX;
-
-  var onMouseMove = function (moveEvt) {
-    moveEvt.preventDefault();
-
-    var distance = moveEvt.clientX - startCoordsX;
-
-    startCoordsX = moveEvt.clientX;
-
-    if (scalePin.offsetLeft < 0) {
-      scalePin.style.left = 0;
-    } else if (scalePin.offsetLeft > MAX_LEFT) {
-      scalePin.style.left = MAX_LEFT + 'px';
-    } else {
-      scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
-    };
-
-    scaleLevel.style.width = scalePin.style.left;
+    var activeClass = uploadPreview.className;
   };
 
-  var onMouseUp = function (upEvt) {
-    upEvt.preventDefault();
 
-    console.log(scalePin.style.left);
+  // слайдер - передвигание ползунка
 
-    scaleValue.value = 100;
+  var scalePin = document.querySelector('.scale__pin');
+  var scale = document.querySelector('.scale');
+  var scaleLevel = document.querySelector('.scale__level');
+  var scaleValue = document.querySelector('.scale__value');
+  var MAX_LEFT = parseFloat(window.getComputedStyle(scale).width) - 20 * 2;
 
-    // изменение интенсивности эффекта
-    var calculateScaleValue = function () {
-      scaleValue.value = Math.round(parseInt(scalePin.style.left.replace('px', '')) * 100 / 455);
-      return scaleValue.value;
-      console.log (scaleValue.value);
-    }
-    calculateScaleValue();
+  scalePin.style.left = MAX_LEFT + 'px';
+  scaleLevel.style.width = scalePin.style.left;
 
-    var calculateGrayscaleIntensity = function () {
-      var grayscaleIntensityLevel = (scaleValue.value * 0.01).toFixed(1);
-      return grayscaleIntensityLevel;
-    }
+  scalePin.addEventListener('mousedown', function(evt) {
+    evt.preventDefault();
 
-    var grayscaleIntensityLevel = calculateGrayscaleIntensity();
-    console.log(grayscaleIntensityLevel);
-/*
-    var changeEffectIntensity = function () {                          // НЕ РАБОТАЕТ
-      if (activeClass == 'effect-chrome') {
-        console.log('chrome is active');
-      }
+    var startCoordsX = evt.clientX;
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var distance = moveEvt.clientX - startCoordsX;
+
+      startCoordsX = moveEvt.clientX;
+
+      if (scalePin.offsetLeft < 0) {
+        scalePin.style.left = 0;
+      } else if (scalePin.offsetLeft > MAX_LEFT) {
+        scalePin.style.left = MAX_LEFT + 'px';
+      } else {
+        scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
+      };
+
+      scaleLevel.style.width = scalePin.style.left;
     };
-    changeEffectIntensity()
-*/
 
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-  }
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
 
-  document.addEventListener('mousemove', onMouseMove);
-  document.addEventListener('mouseup', onMouseUp);
+      // изменение интенсивности эффекта
+      var calculateScaleValue = function () {
+        scaleValue.value = Math.round(parseInt(scalePin.style.left.replace('px', '')) * 100 / 455);
+        return scaleValue.value;
+      };
+
+      calculateScaleValue();
+
+      var calculateChromeIntensity = function () {
+        var chromeLevel = (scaleValue.value * 0.01).toFixed(1);
+        return 'filter: grayscale(' + chromeLevel + ')';
+      };
+
+      var calculateSepiaIntensity = function () {
+        var sepiaLevel = (scaleValue.value * 0.01).toFixed(1);
+        return 'filter: sepia(' + sepiaLevel + ')';
+      };
+
+      var calculateMarvinIntensity = function () {
+        var marvinLevel = scaleValue.value + '%';
+        return 'filter: invert(' + marvinLevel + ')';
+      };
+
+      var calculatePhobosIntensity = function () {
+        var fobosLevel = (scaleValue.value * 0.03).toFixed(1) + 'px';
+        return 'filter: blur(' + fobosLevel + ')';
+      };
+
+      var calculateHeatIntensity = function () {
+        var heatLevel = (1 + scaleValue.value * 0.02).toFixed(1);
+        return 'filter: brightness(' + heatLevel + ')';
+      };
+
+      var changeEffectIntensity = function () {
+        if (activeClass == 'effects__preview--chrome') {
+          uploadPreview.style = calculateChromeIntensity();
+        } else if (activeClass == 'effects__preview--sepia') {
+          uploadPreview.style = calculateSepiaIntensity();
+        } else if (activeClass == 'effects__preview--marvin') {
+          uploadPreview.style = calculateMarvinIntensity();
+        } else if (activeClass == 'effects__preview--phobos') {
+          uploadPreview.style = calculatePhobosIntensity();
+        } else if (activeClass == 'effects__preview--heat') {
+          uploadPreview.style = calculateHeatIntensity();
+        };
+      };
+
+      changeEffectIntensity();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
 });
+
+
+
 
 
 /*
