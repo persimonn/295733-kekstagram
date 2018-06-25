@@ -194,8 +194,6 @@ var uploadBlock =document.querySelector('.img-upload__overlay');
 uploadOpen.addEventListener('change', function(evt) {
   uploadBlock.classList.remove('hidden');
 
-
-
   document.addEventListener('keydown', function(evt) {
     if (evt. keyCode === 27) {
       uploadBlock.classList.add('hidden');
@@ -258,131 +256,116 @@ document.addEventListener('change', function(evt) {
     return 'effects__preview--' + document.activeElement.value;
   };
 
-  for (var k = 0; k < effectButtons.length; k++) {
-    if (effectButtons[k].checked) {
-      activeEffectButton = effectButtons[k];
+  var getActiveClass = function () {
+    for (var k = 0; k < effectButtons.length; k++) {
+      if (effectButtons[k].checked) {
+        activeEffectButton = effectButtons[k];
+      }
     }
-  }
 
-  if (activeEffectButton) {
-    uploadPreview.className = ' ';
-    uploadPreview.classList.add(getEffectClassName());
-    var activeClass = uploadPreview.className;
+    if (activeEffectButton) {
+      uploadPreview.className = ' ';
+      uploadPreview.style = ' ';
+      uploadPreview.classList.add(getEffectClassName());
+      var activeClass = uploadPreview.className;
+    };
+
+    return activeClass;
   };
 
+  var activeClass = getActiveClass();
 
-  // слайдер - передвигание ползунка
-
+  // слайдер - функции
   var scalePin = document.querySelector('.scale__pin');
   var scale = document.querySelector('.scale');
   var scaleLevel = document.querySelector('.scale__level');
   var scaleValue = document.querySelector('.scale__value');
-  var MAX_LEFT = parseFloat(window.getComputedStyle(scale).width) - 20 * 2;
+  var scaleLine = document.querySelector('.scale__line');
 
-  scalePin.style.left = MAX_LEFT + 'px';
-  scaleLevel.style.width = scalePin.style.left;
+  var MAX_LEFT = parseFloat(window.getComputedStyle(scale).width) - parseFloat(window.getComputedStyle(scaleLine).left) - parseFloat(window.getComputedStyle(scaleLine).right);
 
-  scalePin.addEventListener('mousedown', function(evt) {
-    evt.preventDefault();
+  var calculateScaleValue = function () {
+    scaleValue.value = Math.round(parseFloat(scalePin.style.left) * 100 / MAX_LEFT);
+    return scaleValue.value;
+  };
 
-    var startCoordsX = evt.clientX;
-
-    var onMouseMove = function (moveEvt) {
-      moveEvt.preventDefault();
-
-      var distance = moveEvt.clientX - startCoordsX;
-
-      startCoordsX = moveEvt.clientX;
-
-      if (scalePin.offsetLeft < 0) {
-        scalePin.style.left = 0;
-      } else if (scalePin.offsetLeft > MAX_LEFT) {
-        scalePin.style.left = MAX_LEFT + 'px';
-      } else {
-        scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
-      };
-
-      scaleLevel.style.width = scalePin.style.left;
+  var filterProperty = null;
+  var calculateIntensity = function () {
+    if (activeClass === 'effects__preview--chrome') {
+      var chromeLevel = (scaleValue.value * 0.01).toFixed(1);
+      filterProperty = 'filter: grayscale(' + chromeLevel + ')';
+    } else if (activeClass === 'effects__preview--sepia') {
+      var sepiaLevel = (scaleValue.value * 0.01).toFixed(1);
+      filterProperty = 'filter: sepia(' + sepiaLevel + ')';
+    } else if (activeClass === 'effects__preview--marvin') {
+      var marvinLevel = scaleValue.value + '%';
+      filterProperty = 'filter: invert(' + marvinLevel + ')';
+    } else if (activeClass === 'effects__preview--phobos') {
+      var fobosLevel = (scaleValue.value * 0.03).toFixed(1) + 'px';
+      filterProperty = 'filter: blur(' + fobosLevel + ')';
+    } else if (activeClass === 'effects__preview--heat') {
+      var heatLevel = (1 + scaleValue.value * 0.02).toFixed(1);
+      filterProperty = 'filter: brightness(' + heatLevel + ')';
     };
+    return filterProperty;
+  };
 
-    var onMouseUp = function (upEvt) {
-      upEvt.preventDefault();
+  var changeEffectIntensity = function () {
+    uploadPreview.style = calculateIntensity();
+  };
 
-      // изменение интенсивности эффекта
-      var calculateScaleValue = function () {
-        scaleValue.value = Math.round(parseInt(scalePin.style.left.replace('px', '')) * 100 / 455);
-        return scaleValue.value;
-      };
+  // скрываем слайдер, если не применен ни один эффект
+  if (activeClass === 'effects__preview--none') {
+    scale.classList.add('hidden');
+  } else {
+    scale.classList.remove('hidden');
 
-      calculateScaleValue();
+    // изначальное значение ползунка и интенсивности эффекта = 100%
+    scalePin.style.left = MAX_LEFT + 'px';
+    scaleLevel.style.width = scalePin.style.left;
+    calculateScaleValue();
+    changeEffectIntensity();
 
-      var calculateChromeIntensity = function () {
-        var chromeLevel = (scaleValue.value * 0.01).toFixed(1);
-        return 'filter: grayscale(' + chromeLevel + ')';
-      };
 
-      var calculateSepiaIntensity = function () {
-        var sepiaLevel = (scaleValue.value * 0.01).toFixed(1);
-        return 'filter: sepia(' + sepiaLevel + ')';
-      };
+    // слайдер - передвиганиеползунка
+    scalePin.addEventListener('mousedown', function(evt) {
+      evt.preventDefault();
 
-      var calculateMarvinIntensity = function () {
-        var marvinLevel = scaleValue.value + '%';
-        return 'filter: invert(' + marvinLevel + ')';
-      };
+      var startCoordsX = evt.clientX;
 
-      var calculatePhobosIntensity = function () {
-        var fobosLevel = (scaleValue.value * 0.03).toFixed(1) + 'px';
-        return 'filter: blur(' + fobosLevel + ')';
-      };
+      var onMouseMove = function (moveEvt) {
+        moveEvt.preventDefault();
 
-      var calculateHeatIntensity = function () {
-        var heatLevel = (1 + scaleValue.value * 0.02).toFixed(1);
-        return 'filter: brightness(' + heatLevel + ')';
-      };
+        var distance = moveEvt.clientX - startCoordsX;
 
-      var changeEffectIntensity = function () {
-        if (activeClass == 'effects__preview--chrome') {
-          uploadPreview.style = calculateChromeIntensity();
-        } else if (activeClass == 'effects__preview--sepia') {
-          uploadPreview.style = calculateSepiaIntensity();
-        } else if (activeClass == 'effects__preview--marvin') {
-          uploadPreview.style = calculateMarvinIntensity();
-        } else if (activeClass == 'effects__preview--phobos') {
-          uploadPreview.style = calculatePhobosIntensity();
-        } else if (activeClass == 'effects__preview--heat') {
-          uploadPreview.style = calculateHeatIntensity();
+        startCoordsX = moveEvt.clientX;
+
+        if (scalePin.offsetLeft < 0) {
+          scalePin.style.left = 0;
+        } else if (scalePin.offsetLeft > MAX_LEFT) {
+          scalePin.style.left = MAX_LEFT + 'px';
+        } else {
+          scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
         };
+
+        scaleLevel.style.width = scalePin.style.left;
       };
 
-      changeEffectIntensity();
+      var onMouseUp = function (upEvt) {
+        upEvt.preventDefault();
 
-      document.removeEventListener('mousemove', onMouseMove);
-      document.removeEventListener('mouseup', onMouseUp);
-    }
+        // изменение интенсивности эффекта
+        calculateScaleValue();
+        changeEffectIntensity();
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-  });
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+
+  };
 
 });
-
-
-
-
-
-/*
-Интенсивность эффекта регулируется перемещением ползунка в слайдере .scale__pin.
-Уровень эффекта записывается в поле .scale__value. При изменении уровня интенсивности
-эффекта, CSS-стили элемента .img-upload__preview обновляются следующим образом:
-
-Для эффекта «Хром» — filter: grayscale(0..1);
-Для эффекта «Сепия» — filter: sepia(0..1);
-Для эффекта «Марвин» — filter: invert(0..100%);
-Для эффекта «Фобос» — filter: blur(0..3px);
-Для эффекта «Зной» — filter: brightness(1..3).
-При выборе эффекта «Оригинал» слайдер скрывается.
-При переключении эффектов, уровень насыщенности сбрасывается
-до начального значения (100%): слайдер, CSS-стиль изображения и значение поля должны
-обновляться.
-*/
