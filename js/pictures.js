@@ -189,20 +189,20 @@ hideCommentRelatedItems();
 // 1. загрузка нового изображения
 var uploadOpen = document.querySelector('#upload-file');
 var uploadClose = document.querySelector('#upload-cancel');
-var uploadBlock =document.querySelector('.img-upload__overlay');
+var uploadBlock = document.querySelector('.img-upload__overlay');
 
-uploadOpen.addEventListener('change', function(evt) {
+uploadOpen.addEventListener('change', function (evt) {
   uploadBlock.classList.remove('hidden');
 
-  document.addEventListener('keydown', function(evt) {
-    if (evt. keyCode === 27) {
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 27) {
       uploadBlock.classList.add('hidden');
       uploadOpen.value = '';
     }
-  })
+  });
 });
 
-uploadClose.addEventListener('click', function() {
+uploadClose.addEventListener('click', function () {
   uploadBlock.classList.add('hidden');
   uploadOpen.value = '';
 
@@ -220,7 +220,7 @@ var uploadPreview = document.querySelector('.img-upload__preview img');
 var imageSizeValue = 100;
 resizeValue.value = imageSizeValue + '%';
 
-var calculateTransform = function() {
+var calculateTransform = function () {
   var imageSizeScale = imageSizeValue * 0.01;
   return 'transform: scale(' + imageSizeScale + ')';
 };
@@ -232,7 +232,7 @@ resizeMinus.addEventListener('click', function () {
     imageSizeValue = imageSizeValue - 25;
     resizeValue.value = imageSizeValue + '%';
     uploadPreview.style = calculateTransform();
-  };
+  }
 });
 
 resizePlus.addEventListener('click', function () {
@@ -240,7 +240,7 @@ resizePlus.addEventListener('click', function () {
     imageSizeValue = imageSizeValue + 25;
     resizeValue.value = imageSizeValue + '%';
     uploadPreview.style = calculateTransform();
-  };
+  }
 });
 
 
@@ -248,11 +248,11 @@ resizePlus.addEventListener('click', function () {
 
 document.querySelector('#effect-heat').removeAttribute('checked');
 
-document.addEventListener('change', function(evt) {
+document.addEventListener('change', function (evt) {
   var effectButtons = document.querySelectorAll('.effects__radio');
   var activeEffectButton = null;
 
-  var getEffectClassName = function() {
+  var getEffectClassName = function () {
     return 'effects__preview--' + document.activeElement.value;
   };
 
@@ -265,10 +265,10 @@ document.addEventListener('change', function(evt) {
 
     if (activeEffectButton) {
       uploadPreview.className = ' ';
-      uploadPreview.style = ' ';
+      uploadPreview.style.filter = 'none';
       uploadPreview.classList.add(getEffectClassName());
       var activeClass = uploadPreview.className;
-    };
+    }
 
     return activeClass;
   };
@@ -306,7 +306,7 @@ document.addEventListener('change', function(evt) {
     } else if (activeClass === 'effects__preview--heat') {
       var heatLevel = (1 + scaleValue.value * 0.02).toFixed(1);
       filterProperty = 'filter: brightness(' + heatLevel + ')';
-    };
+    }
     return filterProperty;
   };
 
@@ -319,6 +319,7 @@ document.addEventListener('change', function(evt) {
     scale.classList.add('hidden');
   } else {
     scale.classList.remove('hidden');
+  }
 
     // изначальное значение ползунка и интенсивности эффекта = 100%
     scalePin.style.left = MAX_LEFT + 'px';
@@ -328,7 +329,7 @@ document.addEventListener('change', function(evt) {
 
 
     // слайдер - передвиганиеползунка
-    scalePin.addEventListener('mousedown', function(evt) {
+    scalePin.addEventListener('mousedown', function (evt) {
       evt.preventDefault();
 
       var startCoordsX = evt.clientX;
@@ -346,7 +347,7 @@ document.addEventListener('change', function(evt) {
           scalePin.style.left = MAX_LEFT + 'px';
         } else {
           scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
-        };
+        }
 
         scaleLevel.style.width = scalePin.style.left;
       };
@@ -360,12 +361,10 @@ document.addEventListener('change', function(evt) {
 
         document.removeEventListener('mousemove', onMouseMove);
         document.removeEventListener('mouseup', onMouseUp);
-      }
+      };
 
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
     });
-
-  };
 
 });
