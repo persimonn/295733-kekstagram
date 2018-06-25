@@ -249,6 +249,7 @@ resizePlus.addEventListener('click', function () {
 // 2.2 наложение эффекта
 
 document.querySelector('#effect-heat').removeAttribute('checked');
+var activeClass;
 
 document.addEventListener('click', function() {
   var effectButtons = document.querySelectorAll('.effects__radio');
@@ -267,9 +268,11 @@ document.addEventListener('click', function() {
   if (activeEffectButton) {
     uploadPreview.className = ' ';
     uploadPreview.classList.add(getEffectClassName());
-    var activeClass = uploadPreview.className;
+    activeClass = uploadPreview.className;
   }
 });
+
+console.log(activeClass);
 
 // слайдер - передвигание ползунка
 
@@ -326,10 +329,9 @@ scalePin.addEventListener('mousedown', function(evt) {
     console.log(grayscaleIntensityLevel);
 /*
     var changeEffectIntensity = function () {                          // НЕ РАБОТАЕТ
-      if (activeClassName == 'effect-chrome') {
+      if (activeClass == 'effect-chrome') {
         console.log('chrome is active');
       }
-      //uploadPreview.style = calculateIntensity();
     };
     changeEffectIntensity()
 */
