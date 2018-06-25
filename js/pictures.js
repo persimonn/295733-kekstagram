@@ -321,50 +321,49 @@ document.addEventListener('change', function (evt) {
     scale.classList.remove('hidden');
   }
 
-    // изначальное значение ползунка и интенсивности эффекта = 100%
-    scalePin.style.left = MAX_LEFT + 'px';
-    scaleLevel.style.width = scalePin.style.left;
-    calculateScaleValue();
-    changeEffectIntensity();
+  // изначальное значение ползунка и интенсивности эффекта = 100%
+  scalePin.style.left = MAX_LEFT + 'px';
+  scaleLevel.style.width = scalePin.style.left;
+  calculateScaleValue();
+  changeEffectIntensity();
 
+  // слайдер - передвиганиеползунка
+  scalePin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
 
-    // слайдер - передвиганиеползунка
-    scalePin.addEventListener('mousedown', function (evt) {
-      evt.preventDefault();
+    var startCoordsX = evt.clientX;
 
-      var startCoordsX = evt.clientX;
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
 
-      var onMouseMove = function (moveEvt) {
-        moveEvt.preventDefault();
+      var distance = moveEvt.clientX - startCoordsX;
 
-        var distance = moveEvt.clientX - startCoordsX;
+      startCoordsX = moveEvt.clientX;
 
-        startCoordsX = moveEvt.clientX;
+      if (scalePin.offsetLeft < 0) {
+        scalePin.style.left = 0;
+      } else if (scalePin.offsetLeft > MAX_LEFT) {
+        scalePin.style.left = MAX_LEFT + 'px';
+      } else {
+        scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
+      }
 
-        if (scalePin.offsetLeft < 0) {
-          scalePin.style.left = 0;
-        } else if (scalePin.offsetLeft > MAX_LEFT) {
-          scalePin.style.left = MAX_LEFT + 'px';
-        } else {
-          scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
-        }
+      scaleLevel.style.width = scalePin.style.left;
+    };
 
-        scaleLevel.style.width = scalePin.style.left;
-      };
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
 
-      var onMouseUp = function (upEvt) {
-        upEvt.preventDefault();
+      // изменение интенсивности эффекта
+      calculateScaleValue();
+      changeEffectIntensity();
 
-        // изменение интенсивности эффекта
-        calculateScaleValue();
-        changeEffectIntensity();
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
 
-        document.removeEventListener('mousemove', onMouseMove);
-        document.removeEventListener('mouseup', onMouseUp);
-      };
-
-      document.addEventListener('mousemove', onMouseMove);
-      document.addEventListener('mouseup', onMouseUp);
-    });
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
 
 });
