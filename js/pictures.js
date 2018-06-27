@@ -121,10 +121,10 @@ var getBigPicture = function () {
 };
 
 // замена url, кол-ва лайков и кол-ва комментариев большой картинки
-var getBigPictureData = function () {
-  enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[0].url);
-  enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[0].likes;
-  enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[0].comments;
+var getBigPictureData = function (pictureIndex) {
+  enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[pictureIndex].url);
+  enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[pictureIndex].likes;
+  enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[pictureIndex].comments;
 };
 
 // удаление текущих комментов и аватарок
@@ -137,8 +137,8 @@ var removeBigPictureComments = function () {
 };
 
 // создание новых комментов и аватарок
-var getCommentBlock = function () {
-  for (var c = 0; c < pictureObjects[0].commentsArray.length; c++) {
+var getCommentBlock = function (pictureIndex) {
+  for (var c = 0; c < pictureObjects[pictureIndex].commentsArray.length; c++) {
     var commentBlock = document.createElement('li');
     commentBlock.classList.add('social__comment', 'social__comment--text');
     commentsWrapper.appendChild(commentBlock);
@@ -151,7 +151,7 @@ var getCommentBlock = function () {
     commentAvatar.setAttribute('height', '35');
     commentBlock.appendChild(commentAvatar);
 
-    var commentText = document.createTextNode(pictureObjects[0].commentsArray[c]);
+    var commentText = document.createTextNode(pictureObjects[pictureIndex].commentsArray[c]);
     commentBlock.appendChild(commentText);
   }
   return commentBlock;
@@ -159,7 +159,7 @@ var getCommentBlock = function () {
 
 // добавление описания фотографии
 var getPictureDescription = function () {
-  enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[0].description;
+  enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[pictureIndex].description;
 };
 
 // прячем блоки счётчика комментариев и загрузки новых комментариев
@@ -172,11 +172,198 @@ var hideCommentRelatedItems = function () {
   commentsLoad.classList.add('visually-hidden');
 };
 
+var pictureIndex = 24;
+
 var pictureObjects = getPictureArray();
 renderPictures();
+/*
 getBigPicture();
-getBigPictureData();
+getBigPictureData(pictureIndex);
 removeBigPictureComments();
-getCommentBlock();
-getPictureDescription();
+getCommentBlock(pictureIndex);
+getPictureDescription(pictureIndex);
 hideCommentRelatedItems();
+*/
+
+
+// 1. загрузка нового изображения
+var uploadOpen = document.querySelector('#upload-file');
+var uploadClose = document.querySelector('#upload-cancel');
+var uploadBlock = document.querySelector('.img-upload__overlay');
+
+uploadOpen.addEventListener('change', function (evt) {
+  uploadBlock.classList.remove('hidden');
+
+  document.addEventListener('keydown', function (evt) {
+    if (evt.keyCode === 27) {
+      uploadBlock.classList.add('hidden');
+      uploadOpen.value = '';
+    }
+  });
+});
+
+uploadClose.addEventListener('click', function () {
+  uploadBlock.classList.add('hidden');
+  uploadOpen.value = '';
+
+});
+
+// 2. редактирование изображения
+
+// 2.1 масштаб
+
+var resizePlus = document.querySelector('.resize__control--plus');
+var resizeMinus = document.querySelector('.resize__control--minus');
+var resizeValue = document.querySelector('.resize__control--value');
+var uploadPreview = document.querySelector('.img-upload__preview img');
+
+var imageSizeValue = 100;
+resizeValue.value = imageSizeValue + '%';
+
+var calculateTransform = function () {
+  var imageSizeScale = imageSizeValue * 0.01;
+  return 'transform: scale(' + imageSizeScale + ')';
+};
+
+uploadPreview.setAttribute('style', calculateTransform());
+
+resizeMinus.addEventListener('click', function () {
+  if (imageSizeValue >= 50) {
+    imageSizeValue = imageSizeValue - 25;
+    resizeValue.value = imageSizeValue + '%';
+    uploadPreview.style = calculateTransform();
+  }
+});
+
+resizePlus.addEventListener('click', function () {
+  if (imageSizeValue <= 75) {
+    imageSizeValue = imageSizeValue + 25;
+    resizeValue.value = imageSizeValue + '%';
+    uploadPreview.style = calculateTransform();
+  }
+});
+
+
+// 2.2 наложение эффекта
+
+document.querySelector('#effect-heat').removeAttribute('checked');
+
+document.addEventListener('change', function (evt) {
+  var effectButtons = document.querySelectorAll('.effects__radio');
+  var activeEffectButton = null;
+
+  var getEffectClassName = function () {
+    return 'effects__preview--' + document.activeElement.value;
+  };
+
+  var getActiveClass = function () {
+    for (var k = 0; k < effectButtons.length; k++) {
+      if (effectButtons[k].checked) {
+        activeEffectButton = effectButtons[k];
+      }
+    }
+
+    if (activeEffectButton) {
+      uploadPreview.className = ' ';
+      uploadPreview.style.filter = 'none';
+      uploadPreview.classList.add(getEffectClassName());
+      var activeClass = uploadPreview.className;
+    }
+
+    return activeClass;
+  };
+
+  var activeClass = getActiveClass();
+
+  // слайдер - функции
+  var scalePin = document.querySelector('.scale__pin');
+  var scale = document.querySelector('.scale');
+  var scaleLevel = document.querySelector('.scale__level');
+  var scaleValue = document.querySelector('.scale__value');
+  var scaleLine = document.querySelector('.scale__line');
+
+  var MAX_LEFT = parseFloat(window.getComputedStyle(scale).width) - parseFloat(window.getComputedStyle(scaleLine).left) - parseFloat(window.getComputedStyle(scaleLine).right);
+
+  var calculateScaleValue = function () {
+    scaleValue.value = Math.round(parseFloat(scalePin.style.left) * 100 / MAX_LEFT);
+    return scaleValue.value;
+  };
+
+  var filterProperty = null;
+  var calculateIntensity = function () {
+    if (activeClass === 'effects__preview--chrome') {
+      var chromeLevel = (scaleValue.value * 0.01).toFixed(1);
+      filterProperty = 'filter: grayscale(' + chromeLevel + ')';
+    } else if (activeClass === 'effects__preview--sepia') {
+      var sepiaLevel = (scaleValue.value * 0.01).toFixed(1);
+      filterProperty = 'filter: sepia(' + sepiaLevel + ')';
+    } else if (activeClass === 'effects__preview--marvin') {
+      var marvinLevel = scaleValue.value + '%';
+      filterProperty = 'filter: invert(' + marvinLevel + ')';
+    } else if (activeClass === 'effects__preview--phobos') {
+      var fobosLevel = (scaleValue.value * 0.03).toFixed(1) + 'px';
+      filterProperty = 'filter: blur(' + fobosLevel + ')';
+    } else if (activeClass === 'effects__preview--heat') {
+      var heatLevel = (1 + scaleValue.value * 0.02).toFixed(1);
+      filterProperty = 'filter: brightness(' + heatLevel + ')';
+    }
+    return filterProperty;
+  };
+
+  var changeEffectIntensity = function () {
+    uploadPreview.style = calculateIntensity();
+  };
+
+  // скрываем слайдер, если не применен ни один эффект
+  if (activeClass === 'effects__preview--none') {
+    scale.classList.add('hidden');
+  } else {
+    scale.classList.remove('hidden');
+  }
+
+  // изначальное значение ползунка и интенсивности эффекта = 100%
+  scalePin.style.left = MAX_LEFT + 'px';
+  scaleLevel.style.width = scalePin.style.left;
+  calculateScaleValue();
+  changeEffectIntensity();
+
+  // слайдер - передвиганиеползунка
+  scalePin.addEventListener('mousedown', function (evt) {
+    evt.preventDefault();
+
+    var startCoordsX = evt.clientX;
+
+    var onMouseMove = function (moveEvt) {
+      moveEvt.preventDefault();
+
+      var distance = moveEvt.clientX - startCoordsX;
+
+      startCoordsX = moveEvt.clientX;
+
+      if (scalePin.offsetLeft < 0) {
+        scalePin.style.left = 0;
+      } else if (scalePin.offsetLeft > MAX_LEFT) {
+        scalePin.style.left = MAX_LEFT + 'px';
+      } else {
+        scalePin.style.left = (scalePin.offsetLeft + distance) + 'px';
+      }
+
+      scaleLevel.style.width = scalePin.style.left;
+    };
+
+    var onMouseUp = function (upEvt) {
+      upEvt.preventDefault();
+
+      // изменение интенсивности эффекта
+      calculateScaleValue();
+      changeEffectIntensity();
+
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+});
