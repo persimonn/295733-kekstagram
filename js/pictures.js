@@ -196,8 +196,15 @@ uploadOpen.addEventListener('change', function (evt) {
 
   document.addEventListener('keydown', function (evt) {
     if (evt.keyCode === 27) {
-      uploadBlock.classList.add('hidden');
-      uploadOpen.value = '';
+      if (document.activeElement) {
+        if (document.activeElement.name !== 'hashtags' && document.activeElement.name !== 'description') {
+          uploadBlock.classList.add('hidden');
+          uploadOpen.value = '';
+        }
+      } else {
+          uploadBlock.classList.add('hidden');
+          uploadOpen.value = '';
+      }
     }
   });
 });
@@ -367,3 +374,102 @@ document.addEventListener('change', function (evt) {
   });
 
 });
+
+// 2.3 хэш-тэги
+
+// 1. забрать из input поля string с хэш-тегами - КАК?
+// 2. преобразовать string в массив
+// 3. превратить массив в lowercase
+// 4. цикл - проверить каждый хш-тег на соответствие требованиям
+//    макс.размер массива = 5
+
+var hashtagInput = document.querySelector('.text__hashtags');
+var hashtagInputValue = document.querySelector('.text__hashtags').value;
+var submitButton = document.querySelector('.img-upload__submit');
+
+submitButton.addEventListener('click', function (evt) {
+  var hashtagsString = '#лето #пляж #море #пальмы #кот';
+  var hashtagsArray = hashtagsString.split(' ');
+
+  for (var i = 0; i < hashtagsArray.length; i++) {
+    if (hashtagInput.validity.tooShort) {
+    hashtagInput.setCustomValidity('Хэш-тег должен состоять минимум из 2-х символов, включая символ #.');
+    hashtagInput.style.border = '2px solid red';
+  } else if (hashtagInput.validity.tooLong) {
+    hashtagInput.setCustomValidity('Хэш-тег должен состоять максимум из 20-и символов, включая символ #.');
+    hashtagInput.style.border = '2px solid red';
+  } else if (hashtagInput.validity.patternMismatch) {
+    hashtagInput.setCustomValidity('Хэш-тег должен начинаться с символа #. Хэш-тег может содержать только один символ #.');
+    hashtagInput.style.border = '2px solid red';
+  } else if (hashtagInput.validity.typeMismatch) {
+    hashtagInput.setCustomValidity('Поле ввода хэш-тегов.');
+    hashtagInput.style.border = '2px solid red';
+  } else {
+    hashtagInput.setCustomValidity('');
+  }
+  }
+
+});
+
+
+
+/*
+hashtagInput.addEventListener('invalid', function (evt) {
+  if (hashtagInput.validity.tooShort) {
+    hashtagInput.setCustomValidity('Хэш-тег должен состоять минимум из 2-х символов, включая символ #.');
+    hashtagInput.style.border = '2px solid red';
+  } else if (hashtagInput.validity.tooLong) {
+    hashtagInput.setCustomValidity('Хэш-тег должен состоять максимум из 20-и символов, включая символ #.');
+    hashtagInput.style.border = '2px solid red';
+  } else if (hashtagInput.validity.patternMismatch) {
+    hashtagInput.setCustomValidity('Хэш-тег должен начинаться с символа #. Хэш-тег может содержать только один символ #.');
+    hashtagInput.style.border = '2px solid red';
+  } else if (hashtagInput.validity.typeMismatch) {
+    hashtagInput.setCustomValidity('Поле ввода хэш-тегов.');
+    hashtagInput.style.border = '2px solid red';
+  } else {
+    hashtagInput.setCustomValidity('');
+  }
+});
+
+*/
+
+
+
+/*
+хэш-теги необязательны; - НЕ НУЖЕН АТТРИБУТ REQUIRED
+хэш-тег начинается с символа # (решётка); - pattern="#+[A-Za-z0-9_]{1,19}" - ИЛИ  ^#[\w-]+(?:\s+#[\w-]+)*$
+хеш-тег не может состоять только из одной решётки; - MINLENGTH=2 и pattern
+хэш-теги разделяются пробелами; - pattern
+один и тот же хэш-тег не может быть использован дважды;
+нельзя указать больше пяти хэш-тегов;
+максимальная длина одного хэш-тега 20 символов, включая решётку.; - MAXLENGTH=20
+теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом.
+если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы
+редактирования изображения. - LINE 197
+Сообщения о неправильном формате хэштега задаются с помощью метода setCustomValidity у соответствующего поля.
+*/
+
+// 2.4 комментарии
+
+var descriptionInput = document.querySelector('.text__description')
+
+descriptionInput.addEventListener('invalid', function (evt) {
+  if (descriptionInput.validity.tooLong) {
+    descriptionInput.setCustomValidity('Комментарий должен состоять максимум из 140 символов.');
+    hashtagInput.style.border = '2px solid red';
+  } else if (descriptionInput.validity.typeMismatch) {
+    descriptionInput.setCustomValidity('Поле ввода комментариев.');
+    hashtagInput.style.border = '2px solid red';
+  } else {
+    descriptionInput.setCustomValidity('');
+  }
+});
+
+/*
+комментарий не обязателен; - НЕ НУЖЕН АТТРИБУТ REQUIRED
+длина комментария не может составлять больше 140 символов; - MAXLENGTH=140
+если фокус находится в поле ввода комментария, нажатие на Esc
+не должно приводить к закрытию формы редактирования изображения. - LINE 197
+*/
+

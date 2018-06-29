@@ -110,8 +110,8 @@
                 </fieldset>
 
                 <fieldset class="img-upload__text text">
-                  <input class="text__hashtags" name="hashtags" minlength="2" maxlength="20"  placeholder="#хэш-тег">
-                  <textarea class="text__description" name="description" placeholder="Ваш комментарий..."></textarea>
+                  <input class="text__hashtags" name="hashtags" minlength="2" maxlength="20" pattern="^#+[A-Za-z0-9_]{1,19}" max="1" placeholder="#хэш-тег">
+                  <textarea class="text__description" name="description" maxlength="140"placeholder="Ваш комментарий..."></textarea>
                 </fieldset>
 
                 <button type="submit" class="img-upload__submit" id="upload-submit">Опубликовать</button>
