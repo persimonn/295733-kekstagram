@@ -384,66 +384,61 @@ document.addEventListener('change', function (evt) {
 //    макс.размер массива = 5
 
 var hashtagInput = document.querySelector('.text__hashtags');
-var hashtagInputValue = document.querySelector('.text__hashtags').value;
-var submitButton = document.querySelector('.img-upload__submit');
 
-submitButton.addEventListener('click', function (evt) {
-  var hashtagsString = '#лето #пляж #море #пальмы #кот';
-  var hashtagsArray = hashtagsString.split(' ');
+var hashtagsString = '#sun #sea #Cat #BEACH #лето';
 
-  for (var i = 0; i < hashtagsArray.length; i++) {
-    if (hashtagInput.validity.tooShort) {
-    hashtagInput.setCustomValidity('Хэш-тег должен состоять минимум из 2-х символов, включая символ #.');
-    hashtagInput.style.border = '2px solid red';
-  } else if (hashtagInput.validity.tooLong) {
-    hashtagInput.setCustomValidity('Хэш-тег должен состоять максимум из 20-и символов, включая символ #.');
-    hashtagInput.style.border = '2px solid red';
-  } else if (hashtagInput.validity.patternMismatch) {
-    hashtagInput.setCustomValidity('Хэш-тег должен начинаться с символа #. Хэш-тег может содержать только один символ #.');
-    hashtagInput.style.border = '2px solid red';
-  } else if (hashtagInput.validity.typeMismatch) {
-    hashtagInput.setCustomValidity('Поле ввода хэш-тегов.');
+var checkHashtags = function () {
+  var hashtagsArray = hashtagsString.toLowerCase().split(' ');
+
+  var hashtagPattern = new RegExp('^#[A-Za-zА-Яа-я0-9_]{1,19}$');
+
+  var checkedHashtagsArray = [];
+
+  if (hashtagsArray.length > 5) {
+    console.log('Max 5 hashtags');
+    hashtagInput.setCustomValidity('Максимум 5 хэш-тегов.');
     hashtagInput.style.border = '2px solid red';
   } else {
-    hashtagInput.setCustomValidity('');
+    for (var i = 0; i < hashtagsArray.length; i++) {
+      var currentHashtag = hashtagsArray[i];
+      if (currentHashtag.length < 2) {
+        console.log(currentHashtag + ' is shorter than 2');
+        hashtagInput.setCustomValidity('Хэш-тег должен состоять минимум из 2-х символов, включая символ #.');
+        hashtagInput.style.border = '2px solid red';
+      } else if (currentHashtag.length > 20) {
+        console.log(currentHashtag + ' is longer than 20');
+        hashtagInput.setCustomValidity('Хэш-тег должен состоять максимум из 20-и символов, включая символ #.');
+        hashtagInput.style.border = '2px solid red';
+      } else if (!currentHashtag.match(hashtagPattern)) {
+        console.log(currentHashtag + ' does not match pattern');
+        hashtagInput.setCustomValidity('Хэш-тег должен начинаться с символа #. Хэш-тег может содержать только один символ #.');
+        hashtagInput.style.border = '2px solid red';
+      } else if (checkedHashtagsArray.indexOf(currentHashtag) > -1) {
+        console.log(currentHashtag + ' is already used');
+        hashtagInput.setCustomValidity('Хэш-теги не должны повторяться.');
+        hashtagInput.style.border = '2px solid red';
+      } else {
+        checkedHashtagsArray.push(currentHashtag);
+        hashtagInput.setCustomValidity('');
+      }
+    }
   }
-  }
+  return checkedHashtagsArray;
+}
 
-});
+var checkedHashtagsArray = checkHashtags();
+console.log(checkedHashtagsArray);
 
 
 
 /*
-hashtagInput.addEventListener('invalid', function (evt) {
-  if (hashtagInput.validity.tooShort) {
-    hashtagInput.setCustomValidity('Хэш-тег должен состоять минимум из 2-х символов, включая символ #.');
-    hashtagInput.style.border = '2px solid red';
-  } else if (hashtagInput.validity.tooLong) {
-    hashtagInput.setCustomValidity('Хэш-тег должен состоять максимум из 20-и символов, включая символ #.');
-    hashtagInput.style.border = '2px solid red';
-  } else if (hashtagInput.validity.patternMismatch) {
-    hashtagInput.setCustomValidity('Хэш-тег должен начинаться с символа #. Хэш-тег может содержать только один символ #.');
-    hashtagInput.style.border = '2px solid red';
-  } else if (hashtagInput.validity.typeMismatch) {
-    hashtagInput.setCustomValidity('Поле ввода хэш-тегов.');
-    hashtagInput.style.border = '2px solid red';
-  } else {
-    hashtagInput.setCustomValidity('');
-  }
-});
-
-*/
-
-
-
-/*
-хэш-теги необязательны; - НЕ НУЖЕН АТТРИБУТ REQUIRED
-хэш-тег начинается с символа # (решётка); - pattern="#+[A-Za-z0-9_]{1,19}" - ИЛИ  ^#[\w-]+(?:\s+#[\w-]+)*$
-хеш-тег не может состоять только из одной решётки; - MINLENGTH=2 и pattern
-хэш-теги разделяются пробелами; - pattern
+хэш-теги необязательны;
+хэш-тег начинается с символа # (решётка);
+хеш-тег не может состоять только из одной решётки;
+хэш-теги разделяются пробелами;
 один и тот же хэш-тег не может быть использован дважды;
 нельзя указать больше пяти хэш-тегов;
-максимальная длина одного хэш-тега 20 символов, включая решётку.; - MAXLENGTH=20
+максимальная длина одного хэш-тега 20 символов, включая решётку.;
 теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом.
 если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы
 редактирования изображения. - LINE 197
