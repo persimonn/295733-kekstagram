@@ -377,73 +377,48 @@ document.addEventListener('change', function (evt) {
 
 // 2.3 хэш-тэги
 
-// 1. забрать из input поля string с хэш-тегами - КАК?
-// 2. преобразовать string в массив
-// 3. превратить массив в lowercase
-// 4. цикл - проверить каждый хш-тег на соответствие требованиям
-//    макс.размер массива = 5
-
 var hashtagInput = document.querySelector('.text__hashtags');
+var imageUploadButton = document.querySelector('.img-upload__submit');
 
-var hashtagsString = '#sun #sea #Cat #BEACH #лето';
+imageUploadButton.addEventListener('click', function () {
 
-var checkHashtags = function () {
-  var hashtagsArray = hashtagsString.toLowerCase().split(' ');
+  var hashtagsString = hashtagInput.value;
+  var checkHashtags = function () {
+    var hashtagsArray = hashtagsString.toLowerCase().split(' ');
 
-  var hashtagPattern = new RegExp('^#[A-Za-zА-Яа-я0-9_]{1,19}$');
+    var hashtagPattern = new RegExp('^#[A-Za-zА-Яа-я0-9_]{1,19}$');
 
-  var checkedHashtagsArray = [];
+    var checkedHashtagsArray = [];
 
-  if (hashtagsArray.length > 5) {
-    console.log('Max 5 hashtags');
-    hashtagInput.setCustomValidity('Максимум 5 хэш-тегов.');
-    hashtagInput.style.border = '2px solid red';
-  } else {
-    for (var i = 0; i < hashtagsArray.length; i++) {
-      var currentHashtag = hashtagsArray[i];
-      if (currentHashtag.length < 2) {
-        console.log(currentHashtag + ' is shorter than 2');
-        hashtagInput.setCustomValidity('Хэш-тег должен состоять минимум из 2-х символов, включая символ #.');
-        hashtagInput.style.border = '2px solid red';
-      } else if (currentHashtag.length > 20) {
-        console.log(currentHashtag + ' is longer than 20');
-        hashtagInput.setCustomValidity('Хэш-тег должен состоять максимум из 20-и символов, включая символ #.');
-        hashtagInput.style.border = '2px solid red';
-      } else if (!currentHashtag.match(hashtagPattern)) {
-        console.log(currentHashtag + ' does not match pattern');
-        hashtagInput.setCustomValidity('Хэш-тег должен начинаться с символа #. Хэш-тег может содержать только один символ #.');
-        hashtagInput.style.border = '2px solid red';
-      } else if (checkedHashtagsArray.indexOf(currentHashtag) > -1) {
-        console.log(currentHashtag + ' is already used');
-        hashtagInput.setCustomValidity('Хэш-теги не должны повторяться.');
-        hashtagInput.style.border = '2px solid red';
-      } else {
-        checkedHashtagsArray.push(currentHashtag);
-        hashtagInput.setCustomValidity('');
+    if (hashtagsArray.length > 5) {
+      hashtagInput.setCustomValidity('Максимум 5 хэш-тегов.');
+      hashtagInput.style.border = '2px solid red';
+    } else {
+      for (var i = 0; i < hashtagsArray.length; i++) {
+        var currentHashtag = hashtagsArray[i];
+        if (currentHashtag.length < 2) {
+          hashtagInput.setCustomValidity('Хэш-тег должен состоять минимум из 2-х символов, включая символ #.');
+          hashtagInput.style.border = '2px solid red';
+        } else if (currentHashtag.length > 20) {
+          hashtagInput.setCustomValidity('Хэш-тег должен состоять максимум из 20-и символов, включая символ #.');
+          hashtagInput.style.border = '2px solid red';
+        } else if (!currentHashtag.match(hashtagPattern)) {
+          hashtagInput.setCustomValidity('Хэш-тег должен начинаться с символа # и состоять и букв и цифр. Хэш-тег может содержать только один символ #.');
+          hashtagInput.style.border = '2px solid red';
+        } else if (checkedHashtagsArray.indexOf(currentHashtag) > -1) {
+          hashtagInput.setCustomValidity('Хэш-теги не должны повторяться.');
+          hashtagInput.style.border = '2px solid red';
+        } else {
+          checkedHashtagsArray.push(currentHashtag);
+          hashtagInput.setCustomValidity('');
+        }
       }
     }
+    return checkedHashtagsArray;
   }
-  return checkedHashtagsArray;
-}
+  var checkedHashtagsArray = checkHashtags();
+});
 
-var checkedHashtagsArray = checkHashtags();
-console.log(checkedHashtagsArray);
-
-
-
-/*
-хэш-теги необязательны;
-хэш-тег начинается с символа # (решётка);
-хеш-тег не может состоять только из одной решётки;
-хэш-теги разделяются пробелами;
-один и тот же хэш-тег не может быть использован дважды;
-нельзя указать больше пяти хэш-тегов;
-максимальная длина одного хэш-тега 20 символов, включая решётку.;
-теги нечувствительны к регистру: #ХэшТег и #хэштег считаются одним и тем же тегом.
-если фокус находится в поле ввода хэш-тега, нажатие на Esc не должно приводить к закрытию формы
-редактирования изображения. - LINE 197
-Сообщения о неправильном формате хэштега задаются с помощью метода setCustomValidity у соответствующего поля.
-*/
 
 // 2.4 комментарии
 
@@ -460,11 +435,3 @@ descriptionInput.addEventListener('invalid', function (evt) {
     descriptionInput.setCustomValidity('');
   }
 });
-
-/*
-комментарий не обязателен; - НЕ НУЖЕН АТТРИБУТ REQUIRED
-длина комментария не может составлять больше 140 символов; - MAXLENGTH=140
-если фокус находится в поле ввода комментария, нажатие на Esc
-не должно приводить к закрытию формы редактирования изображения. - LINE 197
-*/
-
