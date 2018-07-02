@@ -191,7 +191,7 @@ var uploadOpen = document.querySelector('#upload-file');
 var uploadClose = document.querySelector('#upload-cancel');
 var uploadBlock = document.querySelector('.img-upload__overlay');
 
-uploadOpen.addEventListener('change', function (evt) {
+uploadOpen.addEventListener('change', function () {
   uploadBlock.classList.remove('hidden');
 
   document.addEventListener('keydown', function (evt) {
@@ -255,7 +255,7 @@ resizePlus.addEventListener('click', function () {
 
 document.querySelector('#effect-heat').removeAttribute('checked');
 
-document.addEventListener('change', function (evt) {
+document.addEventListener('change', function () {
   var effectButtons = document.querySelectorAll('.effects__radio');
   var activeEffectButton = null;
 
