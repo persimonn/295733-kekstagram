@@ -375,6 +375,7 @@ document.addEventListener('change', function () {
 
 });
 
+
 // 2.3 хэш-тэги
 
 var hashtagInput = document.querySelector('.text__hashtags');
