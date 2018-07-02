@@ -202,8 +202,8 @@ uploadOpen.addEventListener('change', function (evt) {
           uploadOpen.value = '';
         }
       } else {
-          uploadBlock.classList.add('hidden');
-          uploadOpen.value = '';
+        uploadBlock.classList.add('hidden');
+        uploadOpen.value = '';
       }
     }
   });
@@ -415,16 +415,16 @@ imageUploadButton.addEventListener('click', function () {
       }
     }
     return checkedHashtagsArray;
-  }
-  var checkedHashtagsArray = checkHashtags();
+  };
+  checkHashtags();
 });
 
 
 // 2.4 комментарии
 
-var descriptionInput = document.querySelector('.text__description')
+var descriptionInput = document.querySelector('.text__description');
 
-descriptionInput.addEventListener('invalid', function (evt) {
+descriptionInput.addEventListener('invalid', function () {
   if (descriptionInput.validity.tooLong) {
     descriptionInput.setCustomValidity('Комментарий должен состоять максимум из 140 символов.');
     hashtagInput.style.border = '2px solid red';
