@@ -13,7 +13,7 @@
   };
 
   // замена url, кол-ва лайков и кол-ва комментариев большой картинки
-  var getBigPictureData = function (pictureIndex) {
+  var getBigPictureData = function () {
     enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[pictureIndex].url);
     enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[pictureIndex].likes;
     enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[pictureIndex].comments;
@@ -29,7 +29,7 @@
   };
 
   // создание новых комментов и аватарок
-  var getCommentBlock = function (pictureIndex) {
+  var getCommentBlock = function () {
     for (var c = 0; c < pictureObjects[pictureIndex].commentsArray.length; c++) {
       var commentBlock = document.createElement('li');
       commentBlock.classList.add('social__comment', 'social__comment--text');
@@ -67,7 +67,7 @@
   // открытие окна фотографии в увеличенном виде
   picturesBlockElement.addEventListener('click', function (evt) {
     var targetPicture = evt.target;
-    if (targetPicture && targetPicture.className == 'picture__img') {
+    if (targetPicture && targetPicture.className === 'picture__img') {
       var targetSource = targetPicture.src;
       for (var i = 0; i < pictureObjects.length; i++) {
         if (targetSource.includes(pictureObjects[i].url)) {
@@ -84,18 +84,18 @@
     hideCommentRelatedItems();
 
     // закрытие окна фотографии в увеличенном виде с помощью кнопки esc
-    document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === 27) {
+    document.addEventListener('keydown', function (closeEvt) {
+      if (closeEvt.keyCode === 27) {
         enlargedPicture.classList.add('hidden');
       }
     });
-  })
+  });
 
 
   // закрытие окна фотографии в увеличенном виде с помощью кнопки закрытия
 
-  enlargedPictureClose.addEventListener('click', function() {
-    enlargedPicture.classList.add('hidden')
+  enlargedPictureClose.addEventListener ('click', function() {
+    enlargedPicture.classList.add('hidden');
   });
 
 
