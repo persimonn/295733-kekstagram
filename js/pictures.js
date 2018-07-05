@@ -185,8 +185,6 @@ getCommentBlock(pictureIndex);
 getPictureDescription(pictureIndex);
 hideCommentRelatedItems();
 
-
-
 // 1. загрузка нового изображения
 var uploadOpen = document.querySelector('#upload-file');
 var uploadClose = document.querySelector('#upload-cancel');

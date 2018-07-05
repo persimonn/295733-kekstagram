@@ -94,9 +94,8 @@
 
   // закрытие окна фотографии в увеличенном виде с помощью кнопки закрытия
 
-  enlargedPictureClose.addEventListener ('click', function() {
+  enlargedPictureClose.addEventListener('click', function () {
     enlargedPicture.classList.add('hidden');
   });
-
 
 })();
