@@ -2,11 +2,10 @@
 
 (function () {
 
-  // поиск увеличенной картинки
   var enlargedPicture = document.querySelector('.big-picture');
-
-  // поиск блока комментариев
   var commentsWrapper = enlargedPicture.querySelector('.social__comments');
+  var enlargedPictureClose = enlargedPicture.querySelector('#picture-cancel');
+  var pictureIndex = null;
 
   // отрисовка увеличенной картинки
   var getBigPicture = function () {
@@ -64,15 +63,40 @@
     commentsLoad.classList.add('visually-hidden');
   };
 
-  var pictureIndex = getRandomArbitraryValue(1, 25);
 
-  /*
-  getBigPicture();
-  getBigPictureData(pictureIndex);
-  removeBigPictureComments();
-  getCommentBlock(pictureIndex);
-  getPictureDescription(pictureIndex);
-  hideCommentRelatedItems();
-  */
+  // открытие окна фотографии в увеличенном виде
+  picturesBlockElement.addEventListener('click', function (evt) {
+    var targetPicture = evt.target;
+    if (targetPicture && targetPicture.className == 'picture__img') {
+      var targetSource = targetPicture.src;
+      for (var i = 0; i < pictureObjects.length; i++) {
+        if (targetSource.includes(pictureObjects[i].url)) {
+          pictureIndex = pictureObjects.indexOf(pictureObjects[i]);
+
+        }
+      }
+    }
+    getBigPicture();
+    getBigPictureData(pictureIndex);
+    removeBigPictureComments();
+    getCommentBlock(pictureIndex);
+    getPictureDescription(pictureIndex);
+    hideCommentRelatedItems();
+
+    // закрытие окна фотографии в увеличенном виде с помощью кнопки esc
+    document.addEventListener('keydown', function (evt) {
+      if (evt.keyCode === 27) {
+        enlargedPicture.classList.add('hidden');
+      }
+    });
+  })
+
+
+  // закрытие окна фотографии в увеличенном виде с помощью кнопки закрытия
+
+  enlargedPictureClose.addEventListener('click', function() {
+    enlargedPicture.classList.add('hidden')
+  });
+
 
 })();

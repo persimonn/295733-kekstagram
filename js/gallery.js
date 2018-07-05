@@ -17,7 +17,7 @@
 
   // заполнение шаблонов
   var renderPictures = function () {
-    var picturesBlockElement = document.querySelector('.pictures');
+    window.picturesBlockElement = document.querySelector('.pictures');
 
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < pictureObjects.length; i++) {
