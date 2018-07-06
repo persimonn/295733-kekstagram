@@ -1,3 +1,4 @@
+/*
 'use strict';
 
 // массивы с вводными данными
@@ -176,15 +177,13 @@ var pictureIndex = 24;
 
 var pictureObjects = getPictureArray();
 renderPictures();
-/*
+
 getBigPicture();
 getBigPictureData(pictureIndex);
 removeBigPictureComments();
 getCommentBlock(pictureIndex);
 getPictureDescription(pictureIndex);
 hideCommentRelatedItems();
-*/
-
 
 // 1. загрузка нового изображения
 var uploadOpen = document.querySelector('#upload-file');
@@ -436,3 +435,4 @@ descriptionInput.addEventListener('invalid', function () {
     descriptionInput.setCustomValidity('');
   }
 });
+*/
