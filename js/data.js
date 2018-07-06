@@ -13,12 +13,6 @@
     return randomArrayValue;
   };
 
-  // функция для поиска случайного значения в интервале min - max
-  window.getRandomArbitraryValue = function (min, max) {
-    var randomArbitraryValue = Math.round(Math.random() * (max - min) + min);
-    return randomArbitraryValue;
-  };
-
   // функция для поиска последовательных значений в интервале min - max
   var getPhotosArray = function (min, max) {
     var photosArray = [];
@@ -34,12 +28,12 @@
     for (var n = 1; n <= num; n++) {
 
       // случайное число - кол-во предложений в комментарии
-      var sentenceCount = getRandomArbitraryValue(1, 2);
+      var sentenceCount = window.utils.getRandomArbitraryValue(1, 2);
 
       // случайные неповторяющиеся числа - индексы предложений в массиве предложений
       var sentenceIndexes = [];
       while (sentenceIndexes.length < sentenceCount) {
-        var sentenceIndex = getRandomArbitraryValue(0, 5);
+        var sentenceIndex = window.utils.getRandomArbitraryValue(0, 5);
 
         if (!sentenceIndexes.includes(sentenceIndex)) {
           sentenceIndexes.push(sentenceIndex);
@@ -69,8 +63,8 @@
     for (var i = 0; i < totalPictureObjects; i++) {
       var pictureObject = {
         url: 'photos/' + photosArray[i] + '.jpg',
-        likes: getRandomArbitraryValue(15, 200),
-        commentsCount: getRandomArbitraryValue(1, 6),
+        likes: window.utils.getRandomArbitraryValue(15, 200),
+        commentsCount: window.utils.getRandomArbitraryValue(1, 6),
         description: getRandomArrayValue(photoDescriptions)
       };
       pictureObjects.push(pictureObject);

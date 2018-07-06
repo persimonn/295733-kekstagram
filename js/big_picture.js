@@ -14,9 +14,9 @@
 
   // замена url, кол-ва лайков и кол-ва комментариев большой картинки
   var getBigPictureData = function () {
-    enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', pictureObjects[pictureIndex].url);
-    enlargedPicture.querySelector('.likes-count').textContent = pictureObjects[pictureIndex].likes;
-    enlargedPicture.querySelector('.comments-count').textContent = pictureObjects[pictureIndex].comments;
+    enlargedPicture.querySelector('.big-picture__img > img').setAttribute('src', window.pictureObjects[pictureIndex].url);
+    enlargedPicture.querySelector('.likes-count').textContent = window.pictureObjects[pictureIndex].likes;
+    enlargedPicture.querySelector('.comments-count').textContent = window.pictureObjects[pictureIndex].comments;
   };
 
   // удаление текущих комментов и аватарок
@@ -30,20 +30,20 @@
 
   // создание новых комментов и аватарок
   var getCommentBlock = function () {
-    for (var c = 0; c < pictureObjects[pictureIndex].commentsArray.length; c++) {
+    for (var c = 0; c < window.pictureObjects[pictureIndex].commentsArray.length; c++) {
       var commentBlock = document.createElement('li');
       commentBlock.classList.add('social__comment', 'social__comment--text');
       commentsWrapper.appendChild(commentBlock);
 
       var commentAvatar = document.createElement('img');
       commentAvatar.classList.add('social__picture');
-      commentAvatar.setAttribute('src', 'img/avatar-' + getRandomArbitraryValue(1, 6) + '.svg');
+      commentAvatar.setAttribute('src', 'img/avatar-' + window.utils.getRandomArbitraryValue(1, 6) + '.svg');
       commentAvatar.setAttribute('alt', 'Аватар комментатора фотографии');
       commentAvatar.setAttribute('width', '35');
       commentAvatar.setAttribute('height', '35');
       commentBlock.appendChild(commentAvatar);
 
-      var commentText = document.createTextNode(pictureObjects[pictureIndex].commentsArray[c]);
+      var commentText = document.createTextNode(window.pictureObjects[pictureIndex].commentsArray[c]);
       commentBlock.appendChild(commentText);
     }
     return commentBlock;
@@ -51,7 +51,7 @@
 
   // добавление описания фотографии
   var getPictureDescription = function () {
-    enlargedPicture.querySelector('.social__caption').textContent = pictureObjects[pictureIndex].description;
+    enlargedPicture.querySelector('.social__caption').textContent = window.pictureObjects[pictureIndex].description;
   };
 
   // прячем блоки счётчика комментариев и загрузки новых комментариев
@@ -65,16 +65,17 @@
 
 
   // открытие окна фотографии в увеличенном виде
-  picturesBlockElement.addEventListener('click', function (evt) {
+  window.picturesBlockElement.addEventListener('click', function (evt) {
     var targetPicture = evt.target;
     if (targetPicture && targetPicture.className === 'picture__img') {
       var targetSource = targetPicture.src;
-      for (var i = 0; i < pictureObjects.length; i++) {
-        if (targetSource.includes(pictureObjects[i].url)) {
-          pictureIndex = pictureObjects.indexOf(pictureObjects[i]);
-
+      for (var i = 0; i < window.pictureObjects.length; i++) {
+        if (targetSource.includes(window.pictureObjects[i].url)) {
+          pictureIndex = window.pictureObjects.indexOf(window.pictureObjects[i]);
         }
       }
+    } else if (targetPicture.className !== 'picture__img') {
+      return;
     }
     getBigPicture();
     getBigPictureData(pictureIndex);
@@ -85,7 +86,7 @@
 
     // закрытие окна фотографии в увеличенном виде с помощью кнопки esc
     document.addEventListener('keydown', function (closeEvt) {
-      if (closeEvt.keyCode === 27) {
+      if (closeEvt.keyCode === window.utils.ESC_KEYCODE) {
         enlargedPicture.classList.add('hidden');
       }
     });

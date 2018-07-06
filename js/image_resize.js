@@ -18,13 +18,13 @@
     return 'transform: scale(' + imageSizeScale + ')';
   };
 
-  uploadPreview.setAttribute('style', calculateTransform());
+  window.uploadPreview.setAttribute('style', calculateTransform());
 
   resizeMinus.addEventListener('click', function () {
     if (imageSizeValue >= 50) {
       imageSizeValue = imageSizeValue - 25;
       resizeValue.value = imageSizeValue + '%';
-      uploadPreview.style = calculateTransform();
+      window.uploadPreview.style = calculateTransform();
     }
   });
 
@@ -32,7 +32,7 @@
     if (imageSizeValue <= 75) {
       imageSizeValue = imageSizeValue + 25;
       resizeValue.value = imageSizeValue + '%';
-      uploadPreview.style = calculateTransform();
+      window.uploadPreview.style = calculateTransform();
     }
   });
 

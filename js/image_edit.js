@@ -22,10 +22,10 @@
       }
 
       if (activeEffectButton) {
-        uploadPreview.className = ' ';
-        uploadPreview.style.filter = 'none';
-        uploadPreview.classList.add(getEffectClassName());
-        var activeClass = uploadPreview.className;
+        window.uploadPreview.className = ' ';
+        window.uploadPreview.style.filter = 'none';
+        window.uploadPreview.classList.add(getEffectClassName());
+        var activeClass = window.uploadPreview.className;
       }
 
       return activeClass;
@@ -69,7 +69,7 @@
     };
 
     var changeEffectIntensity = function () {
-      uploadPreview.style = calculateIntensity();
+      window.uploadPreview.style = calculateIntensity();
     };
 
     // скрываем слайдер, если не применен ни один эффект

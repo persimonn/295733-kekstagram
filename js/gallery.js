@@ -20,10 +20,10 @@
     window.picturesBlockElement = document.querySelector('.pictures');
 
     var fragment = document.createDocumentFragment();
-    for (var i = 0; i < pictureObjects.length; i++) {
-      fragment.appendChild(getPicture(pictureObjects[i]));
+    for (var i = 0; i < window.pictureObjects.length; i++) {
+      fragment.appendChild(getPicture(window.pictureObjects[i]));
     }
-    picturesBlockElement.appendChild(fragment);
+    window.picturesBlockElement.appendChild(fragment);
   };
 
   renderPictures();

@@ -11,7 +11,7 @@
     uploadBlock.classList.remove('hidden');
 
     document.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === 27) {
+      if (evt.keyCode === window.utils.ESC_KEYCODE) {
         if (document.activeElement) {
           if (document.activeElement.name !== 'hashtags' && document.activeElement.name !== 'description') {
             uploadBlock.classList.add('hidden');
